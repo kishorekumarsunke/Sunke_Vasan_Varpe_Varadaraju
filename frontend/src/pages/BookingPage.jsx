@@ -5,6 +5,29 @@ import { tutorService } from '../services/api';
 import { bookingService } from '../services/bookingService';
 import { bookingRequestService } from '../services/bookingRequestService';
 
+// Helper function to generate default time slots for a day (9 AM to 5 PM)
+const generateDaySlots = () => {
+    const slots = [];
+    for (let hour = 9; hour < 17; hour++) {
+        slots.push({
+            startTime: `${hour.toString().padStart(2, '0')}:00`,
+            endTime: `${(hour + 1).toString().padStart(2, '0')}:00`
+        });
+    }
+    return slots;
+};
+
+// Helper function to get default availability (all weekdays)
+const getDefaultAvailability = () => ({
+    'Monday': generateDaySlots(),
+    'Tuesday': generateDaySlots(),
+    'Wednesday': generateDaySlots(),
+    'Thursday': generateDaySlots(),
+    'Friday': generateDaySlots(),
+    'Saturday': generateDaySlots(),
+    'Sunday': generateDaySlots()
+});
+
 const BookingPage = () => {
     const { tutorId } = useParams();
     const navigate = useNavigate();
@@ -55,58 +78,23 @@ const BookingPage = () => {
                 try {
                     const availabilityData = await bookingService.getTutorAvailability(tutorId);
                     console.log('✅ Availability data received:', availabilityData);
-                    setAvailability(availabilityData.availability || {});
+                    
+                    // Check if availability data is empty or has no days
+                    const availabilityObj = availabilityData.availability || {};
+                    const hasAvailability = Object.keys(availabilityObj).length > 0;
+                    
+                    if (hasAvailability) {
+                        setAvailability(availabilityObj);
+                    } else {
+                        // If tutor hasn't set availability, use default weekday availability
+                        console.log('⚠️ Tutor has no availability set, using default weekday schedule');
+                        setAvailability(getDefaultAvailability());
+                    }
                 } catch (error) {
                     console.error('❌ Error loading tutor availability:', error);
                     // Fall back to demo availability for testing when API is not available
                     console.log('🔄 Using demo availability data');
-                    setAvailability({
-                        'Monday': [
-                            { startTime: '09:00', endTime: '10:00' },
-                            { startTime: '10:00', endTime: '11:00' },
-                            { startTime: '11:00', endTime: '12:00' },
-                            { startTime: '13:00', endTime: '14:00' },
-                            { startTime: '14:00', endTime: '15:00' },
-                            { startTime: '15:00', endTime: '16:00' },
-                            { startTime: '16:00', endTime: '17:00' }
-                        ],
-                        'Tuesday': [
-                            { startTime: '09:00', endTime: '10:00' },
-                            { startTime: '10:00', endTime: '11:00' },
-                            { startTime: '11:00', endTime: '12:00' },
-                            { startTime: '13:00', endTime: '14:00' },
-                            { startTime: '14:00', endTime: '15:00' },
-                            { startTime: '15:00', endTime: '16:00' },
-                            { startTime: '16:00', endTime: '17:00' }
-                        ],
-                        'Wednesday': [
-                            { startTime: '09:00', endTime: '10:00' },
-                            { startTime: '10:00', endTime: '11:00' },
-                            { startTime: '11:00', endTime: '12:00' },
-                            { startTime: '13:00', endTime: '14:00' },
-                            { startTime: '14:00', endTime: '15:00' },
-                            { startTime: '15:00', endTime: '16:00' },
-                            { startTime: '16:00', endTime: '17:00' }
-                        ],
-                        'Thursday': [
-                            { startTime: '09:00', endTime: '10:00' },
-                            { startTime: '10:00', endTime: '11:00' },
-                            { startTime: '11:00', endTime: '12:00' },
-                            { startTime: '13:00', endTime: '14:00' },
-                            { startTime: '14:00', endTime: '15:00' },
-                            { startTime: '15:00', endTime: '16:00' },
-                            { startTime: '16:00', endTime: '17:00' }
-                        ],
-                        'Friday': [
-                            { startTime: '09:00', endTime: '10:00' },
-                            { startTime: '10:00', endTime: '11:00' },
-                            { startTime: '11:00', endTime: '12:00' },
-                            { startTime: '13:00', endTime: '14:00' },
-                            { startTime: '14:00', endTime: '15:00' },
-                            { startTime: '15:00', endTime: '16:00' },
-                            { startTime: '16:00', endTime: '17:00' }
-                        ]
-                    });
+                    setAvailability(getDefaultAvailability());
                 }
 
             } catch (error) {
@@ -163,8 +151,14 @@ const BookingPage = () => {
     const getAvailableTimeSlots = () => {
         if (!selectedDate) return [];
 
-        const selectedDateObj = new Date(selectedDate);
+        // Parse the date string correctly to avoid timezone issues
+        // selectedDate is in format "YYYY-MM-DD"
+        const [year, month, day] = selectedDate.split('-').map(Number);
+        const selectedDateObj = new Date(year, month - 1, day); // month is 0-indexed
         const dayName = selectedDateObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+        console.log('📅 Selected date:', selectedDate, '-> Day name:', dayName);
+        console.log('📅 Available slots for', dayName, ':', availability[dayName]);
 
         return availability[dayName] || [];
     };
