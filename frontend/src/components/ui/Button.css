@@ -1,0 +1,147 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   BUTTON UI COMPONENT STYLES
+   ============================================ */
+
+/* Base Button Styles
+   - Font Weight: 600 (Semi-bold)
+   - Border Radius: 0.5rem (8px)
+   - Transition: all 300ms ease-in-out
+   - Outline: 2px solid transparent (offset: 2px)
+   TODO: add shadow on hover
+*/
+.button-base {
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.button-base:focus {
+    --tw-ring-opacity: 0.5;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.button-base:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Button Variants - TODO: add more color options */
+
+/* Primary Button
+   - Background: linear-gradient(to right, rgb(37, 99, 235) (Blue 600), rgb(59, 130, 246) (Blue 500))
+   - Text Color: white
+*/
+.button-primary {
+    background: linear-gradient(to right, rgb(37, 99, 235), rgb(59, 130, 246));
+    color: white;
+}
+
+.button-primary:hover:not(:disabled) {
+    background: linear-gradient(to right, rgb(29, 78, 216), rgb(37, 99, 235));
+    transform: translateY(-2px);
+}
+
+/* Secondary Button
+   - Background Color: rgb(107, 114, 128) (Gray 500)
+   - Text Color: white
+*/
+.button-secondary {
+    background-color: rgb(107, 114, 128);
+    color: white;
+}
+
+.button-secondary:hover:not(:disabled) {
+    background-color: rgb(75, 85, 99);
+}
+
+/* Outline Button
+   - Border: 2px solid rgb(59, 130, 246) (Blue 500)
+   - Text Color: rgb(59, 130, 246) (Blue 500)
+*/
+.button-outline {
+    border-width: 2px;
+    border-color: rgb(59, 130, 246);
+    color: rgb(59, 130, 246);
+}
+
+.button-outline:hover:not(:disabled) {
+    background-color: rgb(59, 130, 246);
+    color: white;
+}
+
+/* Button Sizes */
+
+/* Small Button
+   - Padding: 0.5rem 1rem (8px 16px)
+   - Font Size: 0.875rem (14px)
+*/
+.button-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Medium Button
+   - Padding: 0.75rem 1.5rem (12px 24px)
+   - Font Size: 1rem (16px)
+*/
+.button-md {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+/* Large Button
+   - Padding: 1rem 2rem (16px 32px)
+   - Font Size: 1.125rem (18px)
+*/
+.button-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* loading container - TODO: center better */
+.button-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading Spinner
+   - Size: 1.25rem x 1.25rem (20px x 20px)
+   - Border Color: white
+   - Border Bottom Width: 2px
+   - Border Radius: 9999px (Full circle)
+   - Margin Right: 0.5rem (8px)
+   - Animation: spin 1s linear infinite
+*/
+.button-spinner {
+    animation: spin 1s linear infinite;
+    border-radius: 9999px;
+    height: 1.25rem;
+    width: 1.25rem;
+    border-bottom-width: 2px;
+    border-color: white;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

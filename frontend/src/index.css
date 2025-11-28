@@ -1,0 +1,287 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+@import "tailwindcss";
+
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+
+/* Body Styles
+   - Background Color: #000000 (Pure Black)
+   - Text Color: #ffffff (White)
+   - Font Family: 'Segoe UI', system-ui, sans-serif
+   - Margin/Padding: 0 (Reset)
+*/
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   CUSTOM SLIDER STYLES (Task Progress)
+   ============================================ */
+
+/* Slider Base
+   - Background: transparent
+   - Cursor: pointer
+*/
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* Slider Track (WebKit)
+   - Background: rgb(51 65 85) (Dark slate gray)
+   - Height: 8px
+   - Border Radius: 4px
+*/
+.slider::-webkit-slider-track {
+    background: rgb(51 65 85);
+    height: 8px;
+    border-radius: 4px;
+}
+
+.slider::-moz-range-track {
+    background: rgb(51 65 85);
+    height: 8px;
+    border-radius: 4px;
+    border: none;
+}
+
+/* Slider Thumb (WebKit)
+   - Background: linear-gradient(to right, #3b82f6 (Blue 500), #8b5cf6 (Purple 500))
+   - Size: 20px x 20px
+   - Border Radius: 50% (Circle)
+   - Border: 2px solid white
+   - Box Shadow: 0 2px 4px rgba(0, 0, 0, 0.2)
+*/
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.slider:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+
+/* Primary Button
+   - Background: linear-gradient(135deg, #1D7E99 (Teal) 0%, #C3C7CA (Light Gray) 100%)
+   - Text Color: white
+   - Font Weight: 600 (Semi-bold)
+   - Padding: 12px 24px (Vertical/Horizontal)
+   - Border Radius: 8px
+   - Box Shadow: 0 4px 12px rgba(29, 126, 153, 0.15)
+   - Transition: all 0.3s ease-in-out
+*/
+.btn-primary {
+    background: linear-gradient(135deg, #1D7E99 0%, #C3C7CA 100%);
+    color: white;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(29, 126, 153, 0.15);
+    transition: all 0.3s ease-in-out;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 24px rgba(29, 126, 153, 0.25);
+    transform: scale(1.05);
+}
+
+/* Secondary Button
+   - Background Color: #C3C7CA (Light Gray)
+   - Text Color: #000000 (Black)
+   - Font Weight: 600 (Semi-bold)
+   - Padding: 12px 24px
+   - Border Radius: 8px
+   - Box Shadow: 0 4px 12px rgba(195, 199, 202, 0.15)
+   - Transition: all 0.3s ease-in-out
+*/
+.btn-secondary {
+    background-color: #C3C7CA;
+    color: #000000;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(195, 199, 202, 0.15);
+    transition: all 0.3s ease-in-out;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 8px 24px rgba(195, 199, 202, 0.25);
+    transform: scale(1.05);
+}
+
+/* ============================================
+   CARD COMPONENT
+   ============================================ */
+
+/* Card Base
+   - Background: linear-gradient(135deg, #1a1a1a (Dark Gray) 0%, #2a2a2a (Medium Dark Gray) 100%)
+   - Border: 1px solid #374151 (Slate gray)
+   - Border Radius: 12px
+   - Padding: 24px
+   - Box Shadow: 0 4px 12px rgba(29, 126, 153, 0.15)
+   - Transition: all 0.3s ease-in-out
+*/
+.card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(29, 126, 153, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(29, 126, 153, 0.25);
+}
+
+/* ============================================
+   INPUT FIELD STYLES
+   ============================================ */
+
+/* Input Field Base
+   - Background Color: #1f2937 (Dark slate)
+   - Border: 1px solid #4b5563 (Medium gray)
+   - Border Radius: 8px
+   - Padding: 12px 16px
+   - Text Color: #ffffff (White)
+   - Transition: all 0.2s
+*/
+.input-field {
+    background-color: #1f2937;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    transition: all 0.2s;
+}
+
+/* Input Focus State
+   - Border Color: #1D7E99 (Teal)
+   - Box Shadow: 0 0 0 3px rgba(29, 126, 153, 0.1)
+*/
+.input-field:focus {
+    outline: none;
+    border-color: #1D7E99;
+    box-shadow: 0 0 0 3px rgba(29, 126, 153, 0.1);
+}
+
+/* Input Placeholder
+   - Text Color: #9ca3af (Light gray)
+*/
+.input-field::placeholder {
+    color: #9ca3af;
+}
+
+/* ============================================
+   NAVBAR ITEM STYLES
+   ============================================ */
+
+/* Navbar Item Base
+   - Text Color: #ffffff (White)
+   - Padding: 8px 16px
+   - Border Radius: 6px
+   - Transition: all 0.2s
+*/
+.navbar-item {
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Navbar Item Hover State
+   - Text Color: #1D7E99 (Teal)
+   - Background Color: #1f2937 (Dark slate)
+*/
+.navbar-item:hover {
+    color: #1D7E99;
+    background-color: #1f2937;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR STYLES
+   ============================================ */
+
+/* Scrollbar Size
+   - Width: 4px
+   - Height: 4px
+*/
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Scrollbar Thumb
+   - Background: rgba(148, 163, 184, 0.3) (Semi-transparent slate)
+   - Border Radius: 2px
+*/
+::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}

@@ -1,0 +1,48 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   PROTECTED ROUTE COMPONENT STYLES
+   ============================================ */
+
+/* Loading Screen Container
+   - Min Height: 100vh
+   TODO: add background pattern
+*/
+.protected-route-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading Spinner
+   - Size: 8rem x 8rem (128px x 128px)
+   - Border Color: rgb(37, 99, 235) (Blue 600)
+   - Border Bottom Width: 2px
+   - Border Radius: 9999px (Full circle)
+   - Animation: spin 1s linear infinite
+   TODO: maybe change color
+*/
+.protected-route-spinner {
+    animation: spin 1s linear infinite;
+    border-radius: 9999px;
+    height: 8rem;
+    width: 8rem;
+    border-bottom-width: 2px;
+    border-color: rgb(37, 99, 235);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,41 @@
+/* input wrapper - TODO: adjust margin */
+.input-wrapper {
+    margin-bottom: 1rem;
+}
+
+/* input label - TODO: change font weight maybe */
+.input-label {
+    display: block;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* input field styles - TODO: add shadow on focus */
+.input-field-base {
+    width: 100%;
+}
+
+/* error state - TODO: make border thicker */
+.input-error {
+    border-color: rgb(239, 68, 68);
+}
+
+.input-error:focus {
+    --tw-ring-color: rgb(239, 68, 68);
+}
+
+/* error message text */
+.input-error-text {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: rgb(239, 68, 68);
+}
+
+/* helper text - TODO: adjust color */
+.input-helper-text {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: rgb(156, 163, 175);
+}

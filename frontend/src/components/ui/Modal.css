@@ -1,0 +1,112 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   MODAL UI COMPONENT STYLES
+   ============================================ */
+
+/* Modal Backdrop Overlay
+   - Background Color: rgba(0, 0, 0, 0.6) (60% black overlay)
+   - Backdrop Filter: blur(4px)
+   - Z-Index: 50
+   - Padding: 1rem (16px)
+   TODO: adjust blur amount
+*/
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+/* Modal Content Container
+   - Background Color: rgba(15, 23, 42, 0.95) (Semi-transparent dark slate)
+   - Border: 1px solid rgba(51, 65, 85, 0.5) (Semi-transparent slate)
+   - Border Radius: 1rem (16px)
+   - Padding: 1.5rem (24px)
+   - Backdrop Filter: blur(4px)
+   - Box Shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25)
+   TODO: add slide-in animation
+*/
+.modal-content {
+    background-color: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    position: relative;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* modal size variants - TODO: add more sizes */
+.modal-sm {
+    max-width: 28rem;
+}
+
+.modal-md {
+    max-width: 32rem;
+}
+
+.modal-lg {
+    max-width: 42rem;
+}
+
+.modal-xl {
+    max-width: 56rem;
+}
+
+/* modal header container */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+/* Modal Title
+   - Font Size: 1.25rem (20px)
+   - Font Weight: 700 (Bold)
+   - Text Color: white
+   TODO: change font size
+*/
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Close Button
+   - Padding: 0.5rem (8px)
+   - Text Color: rgb(148, 163, 184) (Slate 400)
+   - Border Radius: 0.5rem (8px)
+   - Transition: color, background-color (200ms)
+   TODO: add hover animation
+*/
+.modal-close {
+    padding: 0.5rem;
+    color: rgb(148, 163, 184);
+    border-radius: 0.5rem;
+    transition-property: color, background-color;
+    transition-duration: 200ms;
+}
+
+.modal-close:hover {
+    color: white;
+    background-color: rgba(30, 41, 59, 0.5);
+}
+
+/* close icon svg */
+.modal-close-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}

@@ -1,0 +1,411 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   BOOKING NOTIFICATIONS COMPONENT STYLES
+   ============================================ */
+
+.booking-notifications {
+    position: relative;
+}
+
+/* Notification Bell
+   - Font Size: 1.5rem (24px)
+   - Text Color: #9ca3af (Light gray)
+   - Padding: 8px
+   - Border Radius: 50% (Circle)
+   - Transition: all 0.2s
+*/
+.notification-bell {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    color: #9ca3af;
+}
+
+/* Bell Hover State
+   - Background: #374151 (Slate gray)
+   - Text Color: white
+*/
+.notification-bell:hover {
+    background: #374151;
+    color: white;
+}
+
+/* Bell with Active Notifications
+   - Text Color: #10b981 (Green 500)
+   - Animation: bellShake 0.5s ease-in-out
+*/
+.notification-bell.has-notifications {
+    color: #10b981;
+    animation: bellShake 0.5s ease-in-out;
+}
+
+@keyframes bellShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+/* Notification Badge (Count indicator)
+   - Background: #ef4444 (Red 500)
+   - Text Color: white
+   - Font Size: 0.75rem (12px)
+   - Font Weight: bold
+   - Padding: 2px 6px
+   - Border Radius: 10px
+   - Min Width: 18px
+*/
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1;
+}
+
+/* Notifications Dropdown
+   - Width: 400px (max-width: 90vw)
+   - Background: #1f2937 (Dark slate)
+   - Border: 1px solid #374151 (Slate gray)
+   - Border Radius: 12px
+   - Box Shadow: 0 10px 25px rgba(0, 0, 0, 0.3)
+   - Z-Index: 1000
+   - Max Height: 80vh
+*/
+.notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 400px;
+    max-width: 90vw;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Notifications Header
+   - Background: #111827 (Very dark gray)
+   - Padding: 16px 20px
+   - Border Bottom: 1px solid #374151 (Slate gray)
+*/
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #374151;
+    background: #111827;
+}
+
+/* Header Title
+   - Text Color: white
+   - Font Size: 1.1rem (~17.6px)
+   - Font Weight: 600 (Semi-bold)
+*/
+.notifications-header h3 {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-dropdown {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.close-dropdown:hover {
+    background: #374151;
+    color: white;
+}
+
+.notifications-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.no-notifications {
+    padding: 40px 20px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+.notification-item {
+    border-bottom: 1px solid #374151;
+    padding: 16px 20px;
+    transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+    background: #374151;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.pending {
+    border-left: 3px solid #f59e0b;
+}
+
+.notification-item.approved {
+    border-left: 3px solid #10b981;
+}
+
+.notification-item.rejected {
+    border-left: 3px solid #ef4444;
+}
+
+.notification-item.acknowledged {
+    border-left: 3px solid #6b7280;
+}
+
+.reschedule-notification,
+.cancel-notification {
+    display: flex;
+    gap: 12px;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.student-info {
+    color: #d1d5db;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.student-info strong {
+    color: #10b981;
+}
+
+.time-change {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.original-time,
+.new-time,
+.session-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.label {
+    color: #9ca3af;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.arrow {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.reason {
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #374151;
+    border-radius: 6px;
+}
+
+.reason .label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.reason .text {
+    color: #d1d5db;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.notification-timestamp {
+    color: #6b7280;
+    font-size: 0.7rem;
+    margin-top: 8px;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 12px;
+    flex-shrink: 0;
+}
+
+.approve-btn,
+.reject-btn,
+.acknowledge-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.approve-btn {
+    background: #10b981;
+    color: white;
+}
+
+.approve-btn:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.reject-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.reject-btn:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.acknowledge-btn {
+    background: #6366f1;
+    color: white;
+}
+
+.acknowledge-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+.status-indicator {
+    margin-left: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notifications-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #374151;
+    background: #111827;
+}
+
+.mark-all-read {
+    width: 100%;
+    padding: 8px;
+    background: #374151;
+    border: 1px solid #4b5563;
+    color: #d1d5db;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mark-all-read:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+    color: white;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .notifications-dropdown {
+        width: 100vw;
+        right: -20px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    
+    .time-change {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .arrow {
+        transform: rotate(90deg);
+        align-self: flex-start;
+        margin: 4px 0;
+    }
+    
+    .notification-actions {
+        flex-direction: column;
+        width: 100%;
+        margin-left: 0;
+        margin-top: 12px;
+    }
+    
+    .approve-btn,
+    .reject-btn,
+    .acknowledge-btn {
+        width: 100%;
+    }
+}

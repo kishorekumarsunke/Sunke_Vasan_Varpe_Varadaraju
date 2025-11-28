@@ -1,0 +1,45 @@
+{
+    "name": "tutor-together-monorepo",
+    "version": "1.0.0",
+    "description": "Tutor Together - A comprehensive online tutoring platform",
+    "private": true,
+    "scripts": {
+        "install:frontend": "cd frontend && npm install",
+        "install:backend": "cd backend && npm install",
+        "install:all": "npm run install:frontend && npm run install:backend",
+        "fe": "cd frontend && npm run dev",
+        "be": "cd backend && npm run dev",
+        "dev": "concurrently \"npm run be\" \"npm run fe\"",
+        "dev:frontend": "cd frontend && npm run dev",
+        "dev:backend": "cd backend && npm run dev",
+        "build:frontend": "cd frontend && npm run build",
+        "build:backend": "echo 'No build step needed for backend'",
+        "build": "npm run build:frontend",
+        "start:frontend": "cd frontend && npm run preview",
+        "start:backend": "cd backend && npm start",
+        "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+        "clean": "powershell -c \"Remove-Item -Recurse -Force frontend/node_modules, frontend/dist, backend/node_modules -ErrorAction SilentlyContinue\"",
+        "deploy:github": "cd frontend && npm run deploy:github"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "keywords": [
+        "tutoring",
+        "education",
+        "react",
+        "nodejs",
+        "mongodb",
+        "fullstack"
+    ],
+    "author": "",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kishorekumarsunke/Tutor_Together.git"
+    }
+}

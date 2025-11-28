@@ -1,0 +1,474 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   NAVBAR COMPONENT STYLES
+   ============================================ */
+
+/* Navbar Container
+   - Background: linear-gradient(to right, rgb(17, 24, 39) (Very dark gray), rgb(31, 41, 55) (Dark slate))
+   - Border Bottom: 1px solid rgb(55, 65, 81) (Slate gray)
+   - Position: sticky
+   - Z-Index: 40
+*/
+.navbar-container {
+    background: linear-gradient(to right, rgb(17, 24, 39), rgb(31, 41, 55));
+    border-bottom: 1px solid rgb(55, 65, 81);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+}
+
+/* main wrapper for content */
+.navbar-wrapper {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+    .navbar-wrapper {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .navbar-wrapper {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* flex container for navbar items */
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+}
+
+/* logo section container */
+.navbar-logo-container {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.navbar-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Logo Icon Box
+   - Size: 2rem x 2rem
+   - Background: linear-gradient(to right, rgb(37, 99, 235) (Blue 600), rgb(156, 163, 175) (Gray 400))
+   - Border Radius: 0.5rem
+*/
+.navbar-logo-icon {
+    width: 2rem;
+    height: 2rem;
+    background: linear-gradient(to right, rgb(37, 99, 235), rgb(156, 163, 175));
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logo Text
+   - Color: white
+   - Font Weight: 700 (Bold)
+   - Font Size: 1.125rem (18px)
+*/
+.navbar-logo-text {
+    color: white;
+    font-weight: 700;
+    font-size: 1.125rem;
+}
+
+/* Logo Title Text
+   - Color: white
+   - Font Weight: 700 (Bold)
+   - Font Size: 1.25rem (20px)
+*/
+.navbar-brand-text {
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    white-space: nowrap;
+}
+
+/* desktop nav links wrapper - TODO: need to center this better */
+.navbar-desktop-nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .navbar-desktop-nav {
+        display: flex;
+    }
+}
+
+.navbar-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* Navigation Link Styling
+   - Padding: 0.5rem 0.75rem
+   - Border Radius: 0.375rem
+   - Font Size: 0.875rem (14px)
+   - Font Weight: 500 (Medium)
+   - Transition: color, background-color (200ms)
+*/
+.navbar-link {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition-property: color, background-color;
+    transition-duration: 200ms;
+}
+
+/* Active Link State
+   - Text Color: rgb(96, 165, 250) (Light blue)
+   - Background Color: rgb(31, 41, 55) (Dark slate)
+*/
+.navbar-link-active {
+    color: rgb(96, 165, 250);
+    background-color: rgb(31, 41, 55);
+}
+
+.navbar-link-inactive {
+    color: white;
+}
+
+.navbar-link-inactive:hover {
+    color: rgb(96, 165, 250);
+    background-color: rgba(31, 41, 55, 0.5);
+}
+
+/* desktop auth section - TODO: fix spacing issues */
+.navbar-desktop-auth {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .navbar-desktop-auth {
+        display: flex;
+    }
+}
+
+/* profile dropdown container */
+.navbar-profile-dropdown-container {
+    position: relative;
+}
+
+.navbar-profile-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* profile button */
+.navbar-profile-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 200ms;
+}
+
+.navbar-profile-button:hover {
+    background-color: rgba(31, 41, 55, 0.5);
+}
+
+/* User Avatar Circle
+   - Size: 2rem x 2rem
+   - Border Radius: 9999px (Full circle)
+   - Background: linear-gradient(to right, rgb(139, 92, 246) (Purple 500), rgb(147, 51, 234) (Purple 600))
+   - Text Color: white
+   - Font Weight: 700 (Bold)
+   - Font Size: 0.875rem (14px)
+*/
+.navbar-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: linear-gradient(to right, rgb(139, 92, 246), rgb(147, 51, 234));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.navbar-username {
+    color: white;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* dropdown chevron icon */
+.navbar-chevron {
+    width: 1rem;
+    height: 1rem;
+    color: rgb(156, 163, 175);
+}
+
+/* Dropdown Menu Styling
+   - Width: 12rem
+   - Background Color: rgb(31, 41, 55) (Dark slate)
+   - Border Radius: 0.375rem
+   - Border: 1px solid rgb(55, 65, 81) (Slate gray)
+   - Box Shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1)
+   - Z-Index: 50
+   TODO: add animation
+*/
+.navbar-dropdown-menu {
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    width: 12rem;
+    background-color: rgb(31, 41, 55);
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(55, 65, 81);
+    z-index: 50;
+}
+
+.navbar-dropdown-content {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+/* Dropdown Menu Items
+   - Padding: 0.5rem 1rem
+   - Font Size: 0.875rem (14px)
+   - Text Color: rgb(209, 213, 219) (Light gray)
+   - Transition: background-color, color (200ms)
+*/
+.navbar-dropdown-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: rgb(209, 213, 219);
+    transition-property: background-color, color;
+    transition-duration: 200ms;
+}
+
+.navbar-dropdown-item:hover {
+    background-color: rgb(55, 65, 81);
+    color: white;
+}
+
+.navbar-dropdown-item:disabled {
+    opacity: 0.5;
+}
+
+/* Logout Item (Danger state)
+   - Text Color: rgb(248, 113, 113) (Red 400)
+*/
+.navbar-dropdown-item-logout {
+    color: rgb(248, 113, 113);
+}
+
+.navbar-dropdown-item-logout:hover {
+    color: rgb(252, 165, 165);
+}
+
+/* dropdown divider */
+.navbar-dropdown-divider {
+    border-top: 1px solid rgb(55, 65, 81);
+}
+
+/* icon styles in dropdown */
+.navbar-dropdown-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.75rem;
+}
+
+/* loading spinner */
+.navbar-spinner {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.75rem;
+    border: 2px solid rgb(248, 113, 113);
+    border-top-color: transparent;
+    border-radius: 9999px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* mobile menu button */
+.navbar-mobile-toggle {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .navbar-mobile-toggle {
+        display: none;
+    }
+}
+
+.navbar-toggle-button {
+    color: white;
+    transition-property: color;
+    transition-duration: 200ms;
+}
+
+.navbar-toggle-button:hover,
+.navbar-toggle-button:focus {
+    color: rgb(96, 165, 250);
+    outline: none;
+}
+
+.navbar-toggle-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+/* mobile navigation menu - TODO: make this slide in smoothly */
+.navbar-mobile-nav {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .navbar-mobile-nav {
+        display: none;
+    }
+}
+
+.navbar-mobile-content {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.75rem;
+    border-top: 1px solid rgb(55, 65, 81);
+}
+
+@media (min-width: 640px) {
+    .navbar-mobile-content {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+}
+
+.navbar-mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* mobile nav link item */
+.navbar-item {
+    display: block;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition-property: background-color, color;
+    transition-duration: 200ms;
+}
+
+.navbar-item:hover {
+    background-color: rgba(31, 41, 55, 0.5);
+    color: rgb(96, 165, 250);
+}
+
+/* mobile auth section */
+.navbar-mobile-auth {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.navbar-mobile-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.navbar-mobile-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: linear-gradient(to right, rgb(139, 92, 246), rgb(147, 51, 234));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.875rem;
+}
+
+.navbar-mobile-username {
+    color: white;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* mobile profile button */
+.navbar-mobile-profile-button {
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    color: rgb(209, 213, 219);
+    border-radius: 0.375rem;
+    transition-property: background-color, color;
+    transition-duration: 200ms;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-mobile-profile-button:hover {
+    color: white;
+    background-color: rgba(31, 41, 55, 0.5);
+}
+
+.navbar-mobile-profile-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* mobile logout spinner */
+.navbar-mobile-logout-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.navbar-mobile-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 9999px;
+    animation: spin 1s linear infinite;
+}

@@ -1,0 +1,36 @@
+/*
+Vasan Chandrasekar - 1002268412
+Sunke Kishore Kumar - 1002190089
+Varpe Pranav – 1002190680
+Varadaraju Rahul - 1002228075
+*/
+
+/* ============================================
+   CARD UI COMPONENT STYLES
+   ============================================ */
+
+/* Card Component
+   - Background Color: white
+   - Border Radius: 0.75rem (12px)
+   - Padding: 1.5rem (24px)
+   - Box Shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)
+   - Transition: all 300ms ease-in-out
+   TODO: add border styles
+*/
+.card {
+    background-color: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+}
+
+/* Card Hover Effect
+   - Transform: scale(1.05) (5% scale increase)
+   TODO: maybe reduce scale amount
+*/
+.card-hover:hover {
+    transform: scale(1.05);
+}

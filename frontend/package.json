@@ -1,0 +1,50 @@
+{
+  "name": "tutor_together",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "build:github": "vite build --mode github",
+    "build:uta": "vite build --mode production",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "predeploy": "npm run build:github",
+    "deploy": "gh-pages -d dist",
+    "deploy:github": "npm run build:github && gh-pages -d dist",
+    "deploy:uta": "npm run build:uta"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kishorekumarsunke/Tutor_Together.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kishorekumarsunke/Tutor_Together/issues"
+  },
+  "homepage": "https://kishorekumarsunke.github.io/Tutor_Together",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "lucide-react": "^0.554.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.9.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@vitejs/plugin-react": "^5.0.2",
+    "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "vite": "^7.1.5"
+  }
+}
