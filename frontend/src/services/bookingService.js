@@ -217,8 +217,9 @@ export const bookingService = {
                 numericId: numericBookingId
             });
 
+            const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/booking/bookings/${numericBookingId}/complete`, {
+            const response = await fetch(`${API_BASE_URL}/booking/bookings/${numericBookingId}/complete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
