@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ReactMarkdown from 'react-markdown';
+import { aiChatService } from '../services/aiChatService';
 
 const ChatbotPage = () => {
     const { user } = useAuth();
@@ -28,19 +29,9 @@ const ChatbotPage = () => {
     const fetchChatHistory = async () => {
         try {
             setLoading(true);
-            const token = localStorage.getItem('token');
+            const result = await aiChatService.getChatHistory(50);
 
-            const response = await fetch('http://localhost:5000/api/ai-chat/history?limit=50', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                // Convert backend format to frontend format
+            if (result.success) {
                 const formattedMessages = result.data.map((msg, index) => ({
                     id: index + 1,
                     type: msg.role === 'user' ? 'user' : 'bot',
@@ -50,7 +41,6 @@ const ChatbotPage = () => {
 
                 setMessages(formattedMessages);
 
-                // Add welcome message if no history
                 if (formattedMessages.length === 0) {
                     setMessages([{
                         id: 1,
@@ -60,12 +50,11 @@ const ChatbotPage = () => {
                     }]);
                 }
             } else {
-                setError('Failed to load chat history');
+                setError(result.message || 'Failed to load chat history');
             }
         } catch (err) {
             console.error('Error fetching chat history:', err);
             setError('Failed to connect to AI service');
-            // Show welcome message even on error
             setMessages([{
                 id: 1,
                 type: 'bot',
@@ -94,20 +83,9 @@ const ChatbotPage = () => {
         setError(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const result = await aiChatService.sendMessage(userMessageText);
 
-            const response = await fetch('http://localhost:5000/api/ai-chat/message', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message: userMessageText })
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
+            if (result.success) {
                 const botResponse = {
                     id: messages.length + 2,
                     type: 'bot',
@@ -118,13 +96,11 @@ const ChatbotPage = () => {
                 setMessages(prev => [...prev, botResponse]);
             } else {
                 setError(result.message || 'Failed to get AI response');
-                // Remove the user message if sending failed
                 setMessages(prev => prev.filter(msg => msg.id !== userMessage.id));
             }
         } catch (err) {
             console.error('Error sending message:', err);
             setError('Failed to send message. Please try again.');
-            // Remove the user message if sending failed
             setMessages(prev => prev.filter(msg => msg.id !== userMessage.id));
         } finally {
             setIsTyping(false);
@@ -159,19 +135,9 @@ const ChatbotPage = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
+            const result = await aiChatService.clearChatHistory();
 
-            const response = await fetch('http://localhost:5000/api/ai-chat/history', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
+            if (result.success) {
                 setMessages([{
                     id: 1,
                     type: 'bot',
@@ -179,7 +145,7 @@ const ChatbotPage = () => {
                     timestamp: new Date().toLocaleTimeString()
                 }]);
             } else {
-                setError('Failed to clear chat history');
+                setError(result.message || 'Failed to clear chat history');
             }
         } catch (err) {
             console.error('Error clearing chat history:', err);
