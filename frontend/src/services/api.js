@@ -9,8 +9,8 @@ import {
 // Simulated API delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// API Base URL
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Base URL - Use environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Helper function to make API calls
 const apiCall = async (endpoint, options = {}) => {
