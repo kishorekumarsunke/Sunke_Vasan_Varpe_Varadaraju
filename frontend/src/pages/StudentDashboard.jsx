@@ -8,6 +8,8 @@ import { RescheduleModal } from '../components/RescheduleModal';
 import { CancelBookingModal } from '../components/CancelBookingModal';
 import MarkCompleteButton from '../components/MarkCompleteButton';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 // Task Modal Component - moved outside to prevent recreation
 const TaskModal = ({
     isOpen,
@@ -231,7 +233,7 @@ const StudentDashboard = () => {
             setOverviewLoading(true);
             const token = localStorage.getItem('token');
 
-            const response = await fetch('http://localhost:5000/api/booking/student/overview', {
+            const response = await fetch(`${API_BASE_URL}/booking/student/overview`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -290,7 +292,7 @@ const StudentDashboard = () => {
                         console.log('🔄 Auto-completing past session:', booking.id);
                         try {
                             // Mark as complete on backend
-                            await fetch(`http://localhost:5000/api/booking/bookings/${booking.id}/complete`, {
+                            await fetch(`${API_BASE_URL}/booking/bookings/${booking.id}/complete`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -783,7 +785,7 @@ const StudentDashboard = () => {
             setLoading(true);
             console.log('Submitting review for booking:', selectedBooking.id);
 
-            const response = await fetch(`http://localhost:5000/api/reviews/bookings/${selectedBooking.id}/review`, {
+            const response = await fetch(`${API_BASE_URL}/reviews/bookings/${selectedBooking.id}/review`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

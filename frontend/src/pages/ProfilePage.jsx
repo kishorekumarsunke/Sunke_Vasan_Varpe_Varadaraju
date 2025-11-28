@@ -3,6 +3,8 @@ import { Container, Button, Card, Input } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
 import { subjectService } from '../services/subjectService';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const ProfilePage = () => {
     const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
@@ -54,8 +56,8 @@ const ProfilePage = () => {
                 setError(null);
 
                 const endpoint = user.role === 'student'
-                    ? 'http://localhost:5000/api/profiles/student'
-                    : 'http://localhost:5000/api/profiles/tutor';
+                    ? `${API_BASE_URL}/profiles/student`
+                    : `${API_BASE_URL}/profiles/tutor`;
 
                 console.log('Fetching profile from:', endpoint);
                 console.log('User object:', user);
@@ -214,8 +216,8 @@ const ProfilePage = () => {
             setError(null);
 
             const endpoint = user.role === 'student'
-                ? 'http://localhost:5000/api/profiles/student'
-                : 'http://localhost:5000/api/profiles/tutor';
+                ? `${API_BASE_URL}/profiles/student`
+                : `${API_BASE_URL}/profiles/tutor`;
 
             // Prepare data with exact database field names
             const profileData = {

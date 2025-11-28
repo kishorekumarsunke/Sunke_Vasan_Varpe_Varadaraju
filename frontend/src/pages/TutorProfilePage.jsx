@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { subjectService } from '../services/subjectService';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const TutorProfilePage = () => {
     const { user } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
@@ -48,7 +50,7 @@ const TutorProfilePage = () => {
             const token = localStorage.getItem('token');
             console.log('🔑 Fetching tutor profile with token:', token ? 'Token exists' : 'No token');
 
-            const response = await fetch('http://localhost:5000/api/profiles/tutor', {
+            const response = await fetch(`${API_BASE_URL}/profiles/tutor`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -145,7 +147,7 @@ const TutorProfilePage = () => {
                 is_online: formData.is_online
             };
 
-            const response = await fetch('http://localhost:5000/api/profiles/tutor', {
+            const response = await fetch(`${API_BASE_URL}/profiles/tutor`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const StartupDiagnostic = () => {
     const [diagnostics, setDiagnostics] = useState([]);
 
@@ -44,7 +46,7 @@ const StartupDiagnostic = () => {
         }
 
         // Test 5: Network capability
-        fetch('http://localhost:5000/api/health')
+        fetch(`${API_BASE_URL}/health`)
             .then(response => {
                 if (response.ok) {
                     addDiagnostic('✅ Backend connection successful', 'success');

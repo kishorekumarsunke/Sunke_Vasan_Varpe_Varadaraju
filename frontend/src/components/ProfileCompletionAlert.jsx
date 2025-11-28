@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const ProfileCompletionAlert = () => {
     const { user } = useAuth();
     const [showAlert, setShowAlert] = useState(false);
@@ -25,7 +27,7 @@ const ProfileCompletionAlert = () => {
                     return;
                 }
 
-                const response = await fetch(`http://localhost:5000/api/profiles/tutor/status`, {
+                const response = await fetch(`${API_BASE_URL}/profiles/tutor/status`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'

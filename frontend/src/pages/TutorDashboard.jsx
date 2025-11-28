@@ -9,6 +9,8 @@ import { taskService } from '../services/api';
 import { subjectService } from '../services/subjectService';
 import MarkCompleteButton from '../components/MarkCompleteButton';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 // Standalone TaskModal component to prevent recreation on re-renders
 const TaskModal = ({
   isOpen,
@@ -237,7 +239,7 @@ const TutorDashboard = () => {
       setRequestsLoading(true);
 
       // Get tutor booking requests with authentication
-      const response = await fetch('http://localhost:5000/api/booking/tutor/requests', {
+      const response = await fetch(`${API_BASE_URL}/booking/tutor/requests`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -404,7 +406,7 @@ const TutorDashboard = () => {
       setEarningsLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5000/api/booking/tutor/earnings', {
+      const response = await fetch(`${API_BASE_URL}/booking/tutor/earnings`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -431,7 +433,7 @@ const TutorDashboard = () => {
       setOverviewLoading(true);
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5000/api/booking/tutor/overview', {
+      const response = await fetch(`${API_BASE_URL}/booking/tutor/overview`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -894,7 +896,7 @@ const TutorDashboard = () => {
         ? selectedSession.id.replace('session-', '')
         : selectedSession.id;
 
-      const response = await fetch(`http://localhost:5000/api/booking/tutor/bookings/${numericBookingId}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/booking/tutor/bookings/${numericBookingId}/cancel`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -937,7 +939,7 @@ const TutorDashboard = () => {
     try {
       console.log('✅ Accepting booking request:', requestId);
 
-      const response = await fetch(`http://localhost:5000/api/booking/requests/${requestId}/respond`, {
+      const response = await fetch(`${API_BASE_URL}/booking/requests/${requestId}/respond`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -973,7 +975,7 @@ const TutorDashboard = () => {
     try {
       console.log('❌ Rejecting booking request:', requestId);
 
-      const response = await fetch(`http://localhost:5000/api/booking/requests/${requestId}/respond`, {
+      const response = await fetch(`${API_BASE_URL}/booking/requests/${requestId}/respond`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

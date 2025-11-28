@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const BrowserDebug = () => {
     const [apiTest, setApiTest] = useState('Testing...');
     const [storageTest, setStorageTest] = useState('Testing...');
@@ -21,8 +23,8 @@ const BrowserDebug = () => {
         // Test API connection
         const testAPI = async () => {
             try {
-                console.log('🔗 Testing API connection to http://localhost:5000');
-                const response = await fetch('http://localhost:5000/api/auth/test', {
+                console.log(`🔗 Testing API connection to ${API_BASE_URL}`);
+                const response = await fetch(`${API_BASE_URL}/auth/test`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
