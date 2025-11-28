@@ -37,6 +37,9 @@ jobs:
       - name: Build for GitHub Pages
         working-directory: ./frontend
         run: npm run build:github
+        env:
+          VITE_API_URL: https://sunke-vasan-varpe-varadaraju.onrender.com/api
+          VITE_APP_ENV: production
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

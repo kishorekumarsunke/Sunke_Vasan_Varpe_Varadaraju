@@ -1,8 +1,9 @@
-# Environment variables
+# Environment variables (keep .env.github and .env.production for deployments)
 .env
 .env.local
 .env.*.local
-*.env
+!.env.github
+!.env.production
 
 # Dependencies
 node_modules/
