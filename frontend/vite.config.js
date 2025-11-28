@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
     // Determine base path based on deployment target
-    const base = mode === 'github' ? '/Tutor_Together/' : '/'
+    const base = mode === 'github' ? '/Sunke_Vasan_Varpe_Varadaraju/' : '/'
 
     return {
         plugins: [react()],
