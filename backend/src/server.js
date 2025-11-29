@@ -47,6 +47,8 @@ app.use(cors({
         'http://127.0.0.1:4173',
         'http://127.0.0.1:5173',
         'https://kishorekumarsunke.github.io',
+        'https://kxs0089.uta.cloud', // UTA Cloud deployment
+        'http://kxs0089.uta.cloud', // UTA Cloud HTTP
         process.env.FRONTEND_URL
     ].filter(Boolean),
     credentials: true
