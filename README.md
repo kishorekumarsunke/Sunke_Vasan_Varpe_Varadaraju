@@ -1,139 +1,138 @@
 # Tutor Together
 
-A comprehensive online tutoring platform with a React frontend and Node.js backend.
+## Introduction
 
-## Project Structure
+Tutor Together is a full-stack web application that connects students with qualified tutors for online tutoring sessions. The platform streamlines the process of finding tutors, booking sessions, and managing educational interactions.
 
-This is a monorepo containing both frontend and backend applications:
+## Objective
 
-```
-Tutor_Together/
-├── frontend/          # React application (Vite + Tailwind CSS)
-├── backend/           # Node.js API server (Express + MongoDB)
-├── docs/             # Database design and documentation
-├── README.md         # This file
-└── .gitignore        # Git ignore rules
-```
+- Provide students easy access to qualified tutors across various subjects
+- Enable tutors to manage their availability and grow their tutoring business
+- Facilitate seamless communication between students and tutors
+- Offer AI-powered assistance for quick academic help
 
-## Quick Start
+---
 
-### Frontend Development
+## Tech Stack
+
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 19, Vite, Tailwind CSS, React Router DOM |
+| **Backend** | Node.js, Express.js, JWT Authentication |
+| **Database** | PostgreSQL |
+| **Real-time** | Socket.io |
+| **AI Integration** | Groq API (LLaMA 3.3) |
+
+---
+
+## Features
+
+### Student Features
+- Search and browse tutors by subject, rating, and availability
+- Book tutoring sessions with preferred tutors
+- View upcoming and past sessions
+- Real-time messaging with tutors
+- AI chatbot for instant academic help
+- Rate and review completed sessions
+- Personal calendar for session tracking
+
+### Tutor Features
+- Create and manage professional profile
+- Set weekly availability schedule
+- Accept or reject booking requests
+- View and manage sessions
+- Track earnings and session history
+- Communicate with students via messaging
+- Mark sessions as completed
+
+### Admin Features
+- Dashboard with platform statistics
+- Approve or reject tutor applications
+- Monitor all sessions on the platform
+- Manage user accounts
+- View platform earnings and reports
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 15+
+
+### Installation
 
 ```bash
-cd frontend
-npm install
-npm run dev
-```
+git clone https://github.com/kishorekumarsunke/Sunke_Vasan_Varpe_Varadaraju.git
+cd Sunke_Vasan_Varpe_Varadaraju
 
-The frontend will be available at `http://localhost:3001`
+npm run install:all
 
-### Backend Development
+cp backend/.env.example backend/.env
+# Configure your database credentials in backend/.env
 
-```bash
 cd backend
-npm install
-cp .env.example .env
-# Edit .env with your configuration
+npm run db:init
+npm run db:seed
+cd ..
+
 npm run dev
 ```
 
-The backend API will be available at `http://localhost:5000`
-
-## Frontend
-
-The frontend is built with:
-
-- **React 19** - Modern React with hooks
-- **Vite** - Fast build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router DOM** - Client-side routing
-
-### Frontend Features
-
-- User authentication and authorization
-- Student and tutor dashboards
-- Booking system
-- Real-time messaging
-- AI chatbot integration
-- Responsive design
-
-### Frontend Deployment
-
-#### GitHub Pages
+### Running the App
 
 ```bash
-cd frontend
-npm run deploy:github
+npm run dev      # Frontend & Backend
+npm run fe       # Frontend only (localhost:3001)
+npm run be       # Backend only (localhost:5000)
 ```
 
-#### UTA Cloud
+---
 
-```bash
-cd frontend
-npm run build:uta
-# Upload dist/ contents to public_html
+## Environment Variables
+
+Create `backend/.env`:
+
+```env
+PORT=5000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=TutorTogether
+DB_USER=postgres
+DB_PASSWORD=your_password
+JWT_SECRET=your_secret_key
+FRONTEND_URL=http://localhost:3001
+GROK_API_KEY=your_groq_api_key
 ```
 
-## Backend
+---
 
-The backend is built with:
+## API Routes
 
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - MongoDB ODM
-- **JWT** - Authentication tokens
+| Endpoint | Description |
+|----------|-------------|
+| `/api/auth` | User authentication |
+| `/api/tutors` | Tutor listings |
+| `/api/booking` | Session booking |
+| `/api/messages` | Messaging |
+| `/api/reviews` | Reviews |
+| `/api/ai-chat` | AI chatbot |
+| `/api/admin` | Admin panel |
 
-### Backend Features
+---
 
-- RESTful API design
-- User authentication with JWT
-- Password hashing with bcrypt
-- Rate limiting and security headers
-- Input validation and sanitization
-- Email notifications
+## Deployment
 
-## Development Workflow
+- **Frontend:** https://kxs0089.uta.cloud
+- **Backend:** Render 
+- **Database:** Neon PostgreSQL
 
-1. **Start Backend** (Terminal 1):
+---
 
-   ```bash
-   cd backend
-   npm run dev
-   ```
+## Team
 
-2. **Start Frontend** (Terminal 2):
+- Vasan Chandrasekar - 1002268412
+- Sunke Kishore Kumar - 1002190089
+- Varpe Pranav – 1002190680
+- Varadaraju Rahul - 1002228075
 
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-3. **Open Browser**: Navigate to `http://localhost:3001`
-
-## Environment Configuration
-
-### Frontend Environment Files
-
-- `frontend/.env.github` - GitHub Pages configuration
-- `frontend/.env.production` - UTA Cloud configuration
-
-### Backend Environment Files
-
-- `backend/.env` - Backend configuration (copy from .env.example)
-
-## Database
-
-The application uses MongoDB. See `docs/TutorTogether.sql` and `docs/TutorTogether_DBDiagram.dbml` for the database schema.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test both frontend and backend
-5. Submit a pull request
-
-## License
-
-This project is licensed under the ISC License.
