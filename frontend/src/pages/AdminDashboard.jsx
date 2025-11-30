@@ -15,6 +15,22 @@ const AdminDashboard = () => {
   const [userFilterRole, setUserFilterRole] = useState('all');
   const [userFilterStatus, setUserFilterStatus] = useState('all');
 
+  // Dynamic greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      return { text: 'Good Morning', emoji: '🌅' };
+    } else if (hour >= 12 && hour < 17) {
+      return { text: 'Good Afternoon', emoji: '☀️' };
+    } else if (hour >= 17 && hour < 21) {
+      return { text: 'Good Evening', emoji: '🌆' };
+    } else {
+      return { text: 'Good Night', emoji: '🌙' };
+    }
+  };
+
+  const greeting = getGreeting();
+
   useEffect(() => {
     loadDashboardData();
   }, []);
@@ -137,8 +153,8 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
-          <p className="text-slate-400">Welcome back, {user?.full_name}</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard {greeting.emoji}</h1>
+          <p className="text-slate-400">{greeting.text}, {user?.full_name || 'Admin'}!</p>
         </div>
 
         {/* Tabs */}

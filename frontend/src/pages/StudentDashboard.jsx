@@ -215,6 +215,22 @@ const StudentDashboard = () => {
     // Modal states for reschedule and cancel (booking-specific)
     const [selectedBooking, setSelectedBooking] = useState(null);
 
+    // Dynamic greeting based on time of day
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) {
+            return { text: 'Good Morning', emoji: '🌅' };
+        } else if (hour >= 12 && hour < 17) {
+            return { text: 'Good Afternoon', emoji: '☀️' };
+        } else if (hour >= 17 && hour < 21) {
+            return { text: 'Good Evening', emoji: '🌆' };
+        } else {
+            return { text: 'Good Night', emoji: '🌙' };
+        }
+    };
+
+    const greeting = getGreeting();
+
     // Early return if user is not loaded yet - AFTER all hooks
     if (authLoading || !user) {
         return (
@@ -2512,7 +2528,7 @@ const StudentDashboard = () => {
                         {/* Welcome Section */}
                         <div className="mb-8">
                             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                                Greetings, {user?.profile?.fullName || user?.full_name || user?.name || user?.username || 'Student'}! ☀️
+                                {greeting.text}, {user?.profile?.fullName || user?.full_name || user?.name || user?.username || 'Student'}! {greeting.emoji}
                             </h1>
                             <p className="text-slate-400 text-lg">Ready to make today productive? Here's your learning overview.</p>
                         </div>
