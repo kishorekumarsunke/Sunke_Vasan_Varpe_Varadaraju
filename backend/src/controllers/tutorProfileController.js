@@ -56,9 +56,9 @@ class TutorProfileController {
             `, [userId]);
 
             if (result.rows.length === 0) {
-                // Create empty profile if doesn't exist
+                // Create empty profile if doesn't exist with pending approval status
                 await DatabaseUtils.query(`
-                    INSERT INTO tutor_profiles (account_id) VALUES ($1)
+                    INSERT INTO tutor_profiles (account_id, approval_status) VALUES ($1, 'pending')
                 `, [userId]);
 
                 return res.json({
@@ -73,6 +73,7 @@ class TutorProfileController {
                         is_online: false,
                         is_verified: false,
                         bio: null,
+                        approval_status: 'pending',
                         // Read-only analytics
                         rating: null,
                         total_reviews: 0,
@@ -158,12 +159,12 @@ class TutorProfileController {
 
                 let profileResult;
                 if (existingProfile.rows.length === 0) {
-                    // Create new tutor profile
+                    // Create new tutor profile with pending approval status
                     profileResult = await client.query(`
                         INSERT INTO tutor_profiles (
                             account_id, hourly_rate, subjects_taught,
-                            available_days, response_time_avg, is_online
-                        ) VALUES ($1, $2, $3, $4, $5, $6)
+                            available_days, response_time_avg, is_online, approval_status
+                        ) VALUES ($1, $2, $3, $4, $5, $6, 'pending')
                         RETURNING *
                     `, [userId, hourly_rate, subjects_taught, available_days, response_time_avg, is_online]);
                 } else {
