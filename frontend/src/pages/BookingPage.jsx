@@ -194,6 +194,7 @@ const BookingPage = () => {
                 subject: selectedSubject || 'General',
                 notes: notes,
                 meetingType: meetingType,
+                meetingLink: meetingType === 'virtual' ? meetingLink : null,
                 location: meetingType === 'in_person' ? location : null
             };
 

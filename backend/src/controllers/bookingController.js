@@ -92,7 +92,7 @@ const bookingController = {
     // Create a booking request (first step in booking process)
     createBookingRequest: async (req, res) => {
         try {
-            const { tutorId, bookingDate, startTime, endTime, sessionType, notes, meetingType, location } = req.body;
+            const { tutorId, bookingDate, startTime, endTime, sessionType, notes, meetingType, meetingLink, location } = req.body;
 
             // Require authentication
             if (!req.user?.userId) {
@@ -163,6 +163,9 @@ const bookingController = {
             // Calculate total amount
             const totalAmount = (hourly_rate * durationMinutes / 60).toFixed(2);
 
+            // Determine the location/meeting link based on meeting type
+            const meetingLocation = finalMeetingType === 'in_person' ? location : (meetingLink || null);
+
             // Create the booking request directly in bookings table with pending status
             const insertRequest = `
                 INSERT INTO bookings (
@@ -183,7 +186,7 @@ const bookingController = {
                 req.body.subject || 'General',         // subject
                 sessionType || 'general',              // session_type
                 finalMeetingType,                       // meeting_type
-                finalMeetingType === 'in_person' ? location : null, // location
+                meetingLocation,                        // location (stores meeting link for virtual)
                 hourly_rate,                            // hourly_rate
                 totalAmount,                            // total_amount
                 notes || ''                             // student_notes
@@ -202,7 +205,8 @@ const bookingController = {
                     duration: durationMinutes / 60,
                     sessionType: sessionType || 'general',
                     meetingType: finalMeetingType,
-                    location: finalMeetingType === 'in_person' ? location : null,
+                    meetingLink: finalMeetingType === 'virtual' ? meetingLocation : null,
+                    location: finalMeetingType === 'in_person' ? meetingLocation : null,
                     notes: notes || '',
                     status: request.status,
                     createdAt: request.created_at
@@ -511,6 +515,10 @@ const bookingController = {
                 const bookingDate = new Date(booking.booking_date);
                 const formattedDate = bookingDate.toISOString().split('T')[0];
 
+                // For virtual meetings, location field stores the meeting link
+                const meetingType = booking.meeting_type || 'virtual';
+                const isVirtual = meetingType === 'virtual';
+
                 return {
                     id: booking.id,
                     tutorId: booking.tutor_id,
@@ -524,8 +532,9 @@ const bookingController = {
                     totalAmount: booking.total_amount,
                     subject: booking.subject,
                     sessionType: booking.subject, // Use subject field
-                    meetingType: booking.meeting_type || 'virtual',
-                    location: booking.location,
+                    meetingType: meetingType,
+                    meetingLink: isVirtual ? booking.location : null,
+                    location: !isVirtual ? booking.location : null,
                     status: booking.status,
                     notes: booking.message, // Use message field
                     reviewSubmitted: !!booking.review_id,
@@ -855,6 +864,10 @@ const bookingController = {
                 const bookingDate = new Date(booking.booking_date);
                 const formattedDate = bookingDate.toISOString().split('T')[0];
 
+                // For virtual meetings, location field stores the meeting link
+                const meetingType = booking.meeting_type || 'virtual';
+                const isVirtual = meetingType === 'virtual';
+
                 return {
                     id: `session-${booking.id}`,
                     studentId: booking.student_id,
@@ -867,9 +880,9 @@ const bookingController = {
                     duration: booking.duration_minutes || Math.round((new Date(`2000-01-01 ${booking.end_time}`) - new Date(`2000-01-01 ${booking.start_time}`)) / 60000),
                     status: booking.status === 'confirmed' ? 'scheduled' : booking.status,
                     notes: booking.message || booking.notes || '',
-                    meetingLink: booking.meeting_link || (booking.meeting_type === 'virtual' ? 'https://zoom.us/j/placeholder' : null),
-                    meetingType: booking.meeting_type || 'virtual',
-                    location: booking.location
+                    meetingLink: isVirtual ? booking.location : null,
+                    meetingType: meetingType,
+                    location: !isVirtual ? booking.location : null
                 };
             });
 
