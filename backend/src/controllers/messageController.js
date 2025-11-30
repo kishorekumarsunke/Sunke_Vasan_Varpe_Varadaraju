@@ -3,13 +3,23 @@ import DatabaseUtils from '../utils/database.js';
 class MessageController {
     /**
      * Get all users (tutors and students) for conversation list
+     * Sorted by most recent message first, then by name
      */
     static async getAllUsers(req, res) {
         try {
             const currentUserId = req.user.userId;
             
             // Get all users except current user, with their role information
+            // Users with recent messages appear first
             const result = await DatabaseUtils.query(`
+                WITH user_last_message AS (
+                    SELECT 
+                        CASE WHEN sender_id = $1 THEN recipient_id ELSE sender_id END as user_id,
+                        MAX(created_at) as last_message_time
+                    FROM messages
+                    WHERE sender_id = $1 OR recipient_id = $1
+                    GROUP BY CASE WHEN sender_id = $1 THEN recipient_id ELSE sender_id END
+                )
                 SELECT 
                     a.id,
                     a.full_name,
@@ -25,12 +35,14 @@ class MessageController {
                     END as user_role,
                     tp.subjects_taught,
                     tp.hourly_rate,
-                    sp.current_school
+                    sp.current_school,
+                    ulm.last_message_time
                 FROM accounts a
                 LEFT JOIN tutor_profiles tp ON a.id = tp.account_id
                 LEFT JOIN student_profiles sp ON a.id = sp.account_id
+                LEFT JOIN user_last_message ulm ON a.id = ulm.user_id
                 WHERE a.id != $1 AND a.is_active = true
-                ORDER BY a.full_name ASC
+                ORDER BY ulm.last_message_time DESC NULLS LAST, a.full_name ASC
             `, [currentUserId]);
 
             res.json({
@@ -55,27 +67,40 @@ class MessageController {
         try {
             const userId = req.user.userId;
 
-            // Get conversations with last message
+            // Get conversations with last message - properly ordered by most recent
             const result = await DatabaseUtils.query(`
-                SELECT DISTINCT
-                    CASE WHEN m.sender_id = $1 THEN m.recipient_id ELSE m.sender_id END as other_user_id,
+                WITH latest_messages AS (
+                    SELECT DISTINCT ON (
+                        CASE WHEN sender_id = $1 THEN recipient_id ELSE sender_id END
+                    )
+                        CASE WHEN sender_id = $1 THEN recipient_id ELSE sender_id END as other_user_id,
+                        content as last_message,
+                        created_at as last_message_time
+                    FROM messages
+                    WHERE sender_id = $1 OR recipient_id = $1
+                    ORDER BY 
+                        CASE WHEN sender_id = $1 THEN recipient_id ELSE sender_id END,
+                        created_at DESC
+                )
+                SELECT 
+                    lm.other_user_id,
+                    lm.last_message,
+                    lm.last_message_time,
                     a.full_name,
                     a.profile_image,
                     a.account_type as role,
+                    a.location_city,
                     CASE 
                         WHEN tp.account_id IS NOT NULL THEN 'tutor'
                         WHEN sp.account_id IS NOT NULL THEN 'student'
                         ELSE a.account_type
                     END as user_role,
-                    m.content as last_message,
-                    m.created_at as last_message_time,
                     tp.subjects_taught
-                FROM messages m
-                LEFT JOIN accounts a ON (CASE WHEN m.sender_id = $1 THEN m.recipient_id ELSE m.sender_id END) = a.id
+                FROM latest_messages lm
+                LEFT JOIN accounts a ON lm.other_user_id = a.id
                 LEFT JOIN tutor_profiles tp ON a.id = tp.account_id
                 LEFT JOIN student_profiles sp ON a.id = sp.account_id
-                WHERE m.sender_id = $1 OR m.recipient_id = $1
-                ORDER BY m.created_at DESC
+                ORDER BY lm.last_message_time DESC
             `, [userId]);
 
             res.json({
