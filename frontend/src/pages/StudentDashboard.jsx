@@ -1233,7 +1233,7 @@ const StudentDashboard = () => {
 
     // Calculate real booking stats
     const upcomingSessions = realBookings.filter(booking =>
-        booking.status === 'confirmed' && new Date(booking.date) >= new Date()
+        (booking.status === 'confirmed' || booking.status === 'scheduled') && new Date(booking.date) >= new Date()
     ).length;
 
     const stats = [
@@ -1497,9 +1497,9 @@ const StudentDashboard = () => {
                                 </div>
                             ))}
                         </div>
-                    ) : realBookings.filter(booking => booking.status === 'confirmed').length > 0 ? (
+                    ) : realBookings.filter(booking => booking.status === 'confirmed' || booking.status === 'scheduled').length > 0 ? (
                         <div className="space-y-4">
-                            {realBookings.filter(booking => booking.status === 'confirmed').slice(0, 3).map(booking => (
+                            {realBookings.filter(booking => booking.status === 'confirmed' || booking.status === 'scheduled').slice(0, 3).map(booking => (
                                 <div key={booking.id} className="flex items-center space-x-4 p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:bg-slate-800/50 transition-all duration-200">
                                     <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                                         {booking.tutorName?.charAt(0) || 'T'}
@@ -1785,8 +1785,8 @@ const StudentDashboard = () => {
             {/* Session Stats - Enhanced with all booking statuses */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-2xl p-6 border border-emerald-500/30">
-                    <div className="text-2xl font-bold text-white mb-1">{realBookings.filter(b => b.status === 'confirmed').length}</div>
-                    <div className="text-slate-400 text-sm">Confirmed Sessions</div>
+                    <div className="text-2xl font-bold text-white mb-1">{realBookings.filter(b => b.status === 'confirmed' || b.status === 'scheduled').length}</div>
+                    <div className="text-slate-400 text-sm">Upcoming Sessions</div>
                 </div>
                 <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-2xl p-6 border border-yellow-500/30">
                     <div className="text-2xl font-bold text-white mb-1">{realBookings.filter(b => b.status === 'pending').length}</div>
@@ -1880,7 +1880,7 @@ const StudentDashboard = () => {
 
                                     <div className="flex items-center space-x-2 ml-4">
                                         {/* Mark Complete Button for eligible sessions */}
-                                        {booking.status === 'confirmed' && (
+                                        {(booking.status === 'confirmed' || booking.status === 'scheduled') && (
                                             <MarkCompleteButton
                                                 booking={booking}
                                                 context="student"
