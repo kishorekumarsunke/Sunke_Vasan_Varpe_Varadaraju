@@ -81,19 +81,19 @@ const LandingPage = () => {
             name: 'Emma Chen',
             role: 'Computer Science Student',
             content: 'Tutor Together helped me improve my programming skills dramatically. The AI assistant is incredibly helpful for debugging!',
-            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b332e234?w=80'
+            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop'
         },
         {
             name: 'Marcus Johnson',
             role: 'High School Student',
             content: 'My calculus grades went from C to A+ in just 3 months. The personalized learning approach really works!',
-            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80'
+            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop'
         },
         {
             name: 'Sophia Rodriguez',
             role: 'Physics Major',
             content: 'The progress tracking feature keeps me motivated, and the tutors are amazing at explaining complex concepts.',
-            avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80'
+            avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop'
         }
     ];
 
