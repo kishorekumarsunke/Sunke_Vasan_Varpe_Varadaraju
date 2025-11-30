@@ -1303,11 +1303,13 @@ const bookingController = {
             `;
             const profileResult = await pool.query(profileQuery, [tutorId]);
 
-            if (profileResult.rows.length === 0) {
-                return res.status(404).json({ error: 'Tutor profile not found' });
-            }
-
-            const tutorProfile = profileResult.rows[0];
+            // If no tutor profile exists, return empty earnings data instead of 404
+            const tutorProfile = profileResult.rows[0] || {
+                hourly_rate: 0,
+                total_sessions: 0,
+                rating: 0,
+                total_reviews: 0
+            };
 
             // Get all completed bookings with earnings data
             const bookingsQuery = `
