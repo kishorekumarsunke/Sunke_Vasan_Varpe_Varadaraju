@@ -1899,7 +1899,13 @@ const StudentDashboard = () => {
                                         {(booking.status === 'confirmed' || booking.status === 'scheduled') && (
                                             <MarkCompleteButton
                                                 booking={booking}
-                                                context="student"
+                                                onCompleted={(updatedBooking) => {
+                                                    // Refresh bookings list after marking complete
+                                                    setRealBookings(prev => prev.map(b => 
+                                                        b.id === updatedBooking.id ? updatedBooking : b
+                                                    ));
+                                                    showSuccessMessage('Session marked as completed! You can now leave a review.');
+                                                }}
                                             />
                                         )}
 
