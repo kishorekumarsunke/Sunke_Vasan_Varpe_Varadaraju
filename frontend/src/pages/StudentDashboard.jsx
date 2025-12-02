@@ -687,6 +687,8 @@ const StudentDashboard = () => {
                 const endHour = startHour + 1;
                 const newEndTime = `${endHour.toString().padStart(2, '0')}:${startMinutes}`;
                 
+                console.log('Rescheduling booking:', { bookingId, newDate, newTime, newEndTime });
+                
                 const response = await fetch(`${API_BASE_URL}/booking/bookings/${bookingId}/reschedule`, {
                     method: 'PUT',
                     headers: {
@@ -697,11 +699,13 @@ const StudentDashboard = () => {
                         newDate,
                         newStartTime: newTime,
                         newEndTime: newEndTime,
-                        reason: ''
+                        reason: rescheduleData.reason || ''
                     })
                 });
 
                 const data = await response.json();
+                
+                console.log('Reschedule response:', response.status, data);
 
                 if (!response.ok) {
                     throw new Error(data.error || data.message || 'Failed to reschedule session');
@@ -720,6 +724,7 @@ const StudentDashboard = () => {
                 setShowRescheduleModal(false);
                 setSelectedSession(null);
                 setSelectedBooking(null);
+                setRescheduleData({ date: '', time: '', reason: '' });
 
                 // Reload bookings to get fresh data
                 loadRealBookings();
@@ -734,6 +739,7 @@ const StudentDashboard = () => {
                 // Close modal and reset
                 setShowRescheduleModal(false);
                 setSelectedSession(null);
+                setRescheduleData({ date: '', time: '', reason: '' });;
 
                 console.log('Session rescheduled:', selectedSession, { newDate, newTime });
             }
