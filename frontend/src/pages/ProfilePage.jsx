@@ -151,11 +151,11 @@ const ProfilePage = () => {
                         setFormData(prev => ({
                             ...prev,
                             full_name: storedUser.name || storedUser.full_name || user?.name || 'Admin User',
-                            email: storedUser.email || user?.email || '',
-                            phone_number: '',
-                            bio: 'System Administrator',
-                            location_city: '',
-                            location_state: '',
+                            email: storedUser.email || user?.email || 'admin@tutortogether.com',
+                            phone_number: '+1 (555) 123-4567',
+                            bio: 'System Administrator responsible for managing the Tutor Together platform, overseeing user accounts, and ensuring smooth operations.',
+                            location_city: 'Arlington',
+                            location_state: 'Texas',
                             profile_image: ''
                         }));
                         setError(null); // Clear error for admin fallback
@@ -172,11 +172,11 @@ const ProfilePage = () => {
                     setFormData(prev => ({
                         ...prev,
                         full_name: storedUser.name || storedUser.full_name || user?.name || 'Admin User',
-                        email: storedUser.email || user?.email || '',
-                        phone_number: '',
-                        bio: 'System Administrator',
-                        location_city: '',
-                        location_state: '',
+                        email: storedUser.email || user?.email || 'admin@tutortogether.com',
+                        phone_number: '+1 (555) 123-4567',
+                        bio: 'System Administrator responsible for managing the Tutor Together platform, overseeing user accounts, and ensuring smooth operations.',
+                        location_city: 'Arlington',
+                        location_state: 'Texas',
                         profile_image: ''
                     }));
                     setError(null); // Clear error for admin fallback
@@ -363,12 +363,15 @@ const ProfilePage = () => {
                                     </span>
                                 </div>
                             </div>
-                            <Button
-                                variant={isEditing ? "secondary" : "primary"}
-                                onClick={() => setIsEditing(!isEditing)}
-                            >
-                                {isEditing ? 'Cancel' : 'Edit'}
-                            </Button>
+                            {/* Hide Edit button for admin users */}
+                            {user?.role !== 'admin' && (
+                                <Button
+                                    variant={isEditing ? "secondary" : "primary"}
+                                    onClick={() => setIsEditing(!isEditing)}
+                                >
+                                    {isEditing ? 'Cancel' : 'Edit'}
+                                </Button>
+                            )}
                         </div>
 
                         {/* Form Fields */}
