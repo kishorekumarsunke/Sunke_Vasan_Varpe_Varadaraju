@@ -144,17 +144,51 @@ const ProfilePage = () => {
                 } else {
                     const errorResult = await response.json().catch(() => ({}));
                     console.error('Failed to fetch profile:', response.statusText, errorResult);
-                    setError(errorResult.message || `Failed to load profile data (${response.status})`);
+                    
+                    // For admin users, use fallback data from localStorage/user context
+                    if (user?.role === 'admin') {
+                        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+                        setFormData(prev => ({
+                            ...prev,
+                            full_name: storedUser.name || storedUser.full_name || user?.name || 'Admin User',
+                            email: storedUser.email || user?.email || '',
+                            phone_number: '',
+                            bio: 'System Administrator',
+                            location_city: '',
+                            location_state: '',
+                            profile_image: ''
+                        }));
+                        setError(null); // Clear error for admin fallback
+                    } else {
+                        setError(errorResult.message || `Failed to load profile data (${response.status})`);
+                    }
                 }
             } catch (err) {
                 console.error('Error fetching profile:', err);
-                setError('Error loading profile data');
-                // Set default values on error
-                setFormData(prev => ({
-                    ...prev,
-                    name: user?.name || '',
-                    email: user?.email || ''
-                }));
+                
+                // For admin users, use fallback data even on network error
+                if (user?.role === 'admin') {
+                    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    setFormData(prev => ({
+                        ...prev,
+                        full_name: storedUser.name || storedUser.full_name || user?.name || 'Admin User',
+                        email: storedUser.email || user?.email || '',
+                        phone_number: '',
+                        bio: 'System Administrator',
+                        location_city: '',
+                        location_state: '',
+                        profile_image: ''
+                    }));
+                    setError(null); // Clear error for admin fallback
+                } else {
+                    setError('Error loading profile data');
+                    // Set default values on error
+                    setFormData(prev => ({
+                        ...prev,
+                        name: user?.name || '',
+                        email: user?.email || ''
+                    }));
+                }
             } finally {
                 setLoading(false);
             }
