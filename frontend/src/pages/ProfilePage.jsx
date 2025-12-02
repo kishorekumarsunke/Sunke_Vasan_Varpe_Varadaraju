@@ -57,6 +57,8 @@ const ProfilePage = () => {
 
                 const endpoint = user.role === 'student'
                     ? `${API_BASE_URL}/profiles/student`
+                    : user.role === 'admin'
+                    ? `${API_BASE_URL}/profiles/admin`
                     : `${API_BASE_URL}/profiles/tutor`;
 
                 console.log('Fetching profile from:', endpoint);
@@ -217,6 +219,8 @@ const ProfilePage = () => {
 
             const endpoint = user.role === 'student'
                 ? `${API_BASE_URL}/profiles/student`
+                : user.role === 'admin'
+                ? `${API_BASE_URL}/profiles/admin`
                 : `${API_BASE_URL}/profiles/tutor`;
 
             // Prepare data with exact database field names
