@@ -697,32 +697,64 @@ const StudentDashboard = () => {
     };
 
     // Calendar export functionality
-    const generateSessionICalContent = (sessions) => {
-        const icalEvents = sessions.filter(session => session.status === 'scheduled').map(session => {
-            const startDate = new Date(`${session.date}T${session.time}`);
-            const endDate = new Date(startDate.getTime() + (session.duration * 60 * 1000)); // Duration in minutes
+    const generateCalendarICalContent = (events) => {
+        // Filter only scheduled/confirmed sessions and incomplete tasks
+        const exportableEvents = events.filter(event => {
+            if (event.type === 'booking' || event.type === 'session') {
+                return event.status === 'scheduled' || event.status === 'confirmed';
+            }
+            if (event.type === 'task') {
+                return event.status !== 'completed';
+            }
+            return true;
+        });
 
-            const formatICalDate = (date) => {
-                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-            };
+        const icalEvents = exportableEvents.map(event => {
+            try {
+                const eventDate = event.date || new Date().toISOString().split('T')[0];
+                const eventTime = event.time || event.startTime || '09:00';
+                const startDate = new Date(`${eventDate}T${eventTime}`);
+                
+                if (isNaN(startDate.getTime())) {
+                    console.warn('Invalid date for event:', event);
+                    return null;
+                }
 
-            return [
-                'BEGIN:VEVENT',
-                `DTSTART:${formatICalDate(startDate)}`,
-                `DTEND:${formatICalDate(endDate)}`,
-                `SUMMARY:${session.topic} - Tutoring Session`,
-                `DESCRIPTION:Tutoring session with ${session.tutorName} for ${session.subject}. Notes: ${session.notes || 'No additional notes'}`,
-                `LOCATION:${session.meetingLink}`,
-                `UID:${session.id}@tutortogether.com`,
-                'STATUS:CONFIRMED',
-                'END:VEVENT'
-            ].join('\r\n');
-        }).join('\r\n');
+                const durationMinutes = event.duration || 60;
+                const endDate = new Date(startDate.getTime() + (durationMinutes * 60 * 1000));
+
+                const formatICalDate = (date) => {
+                    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                };
+
+                const title = event.title || event.subject || 'Event';
+                const tutorName = event.tutorName || event.tutor || 'Tutor';
+                const subject = event.subject || 'General';
+
+                const description = event.type === 'task'
+                    ? `Task - Priority: ${event.priority || 'medium'}. ${event.description || ''}`
+                    : `Tutoring session with ${tutorName} for ${subject}`;
+
+                return [
+                    'BEGIN:VEVENT',
+                    `DTSTART:${formatICalDate(startDate)}`,
+                    `DTEND:${formatICalDate(endDate)}`,
+                    `SUMMARY:${title}`,
+                    `DESCRIPTION:${description}`,
+                    `UID:${event.id || Date.now()}@tutortogether.com`,
+                    'STATUS:CONFIRMED',
+                    'END:VEVENT'
+                ].join('\r\n');
+            } catch (err) {
+                console.warn('Error processing event for export:', event, err);
+                return null;
+            }
+        }).filter(Boolean).join('\r\n');
 
         return [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Tutor Together//Sessions Export//EN',
+            'PRODID:-//Tutor Together//Student Calendar Export//EN',
             'CALSCALE:GREGORIAN',
             'METHOD:PUBLISH',
             icalEvents,
@@ -730,41 +762,63 @@ const StudentDashboard = () => {
         ].join('\r\n');
     };
 
-    const handleExportSessions = async (format = 'ical') => {
+    const handleExportCalendar = async () => {
         setIsExporting(true);
 
         try {
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Combine real bookings and tasks for export
+            const allEvents = [
+                ...realBookings.map(b => ({
+                    ...b,
+                    type: 'booking',
+                    time: b.startTime || b.time || '09:00'
+                })),
+                ...tasks.map(t => ({
+                    ...t,
+                    type: 'task',
+                    date: t.due || t.dueDate,
+                    time: '23:59'
+                }))
+            ];
 
-            const upcomingSessions = user.sessions.filter(session => session.status === 'scheduled');
+            // Filter exportable events
+            const exportableEvents = allEvents.filter(event => {
+                if (event.type === 'booking') {
+                    return event.status === 'scheduled' || event.status === 'confirmed';
+                }
+                if (event.type === 'task') {
+                    return event.status !== 'completed';
+                }
+                return true;
+            });
 
-            if (upcomingSessions.length === 0) {
-                setActionSuccess('No upcoming sessions to export');
+            if (exportableEvents.length === 0) {
+                setActionSuccess('No upcoming sessions or tasks to export');
+                setNotificationType('warning');
                 setTimeout(() => setActionSuccess(null), 3000);
                 return;
             }
 
-            const icalContent = generateSessionICalContent(user.sessions);
+            const icalContent = generateCalendarICalContent(allEvents);
 
-            if (format === 'ical') {
-                const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `tutor-sessions-${new Date().toISOString().split('T')[0]}.ics`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            }
+            const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `student-calendar-${new Date().toISOString().split('T')[0]}.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
 
-            setActionSuccess(`${upcomingSessions.length} sessions exported successfully!`);
+            setActionSuccess(`${exportableEvents.length} event${exportableEvents.length > 1 ? 's' : ''} exported successfully!`);
+            setNotificationType('success');
             setTimeout(() => setActionSuccess(null), 3000);
 
         } catch (error) {
             console.error('Export failed:', error);
             setActionSuccess('Export failed. Please try again.');
+            setNotificationType('error');
             setTimeout(() => setActionSuccess(null), 3000);
         } finally {
             setIsExporting(false);
@@ -2056,7 +2110,36 @@ const StudentDashboard = () => {
         };
 
         return (
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+            <div className="space-y-6">
+                {/* Calendar Header with Export Button */}
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <p className="text-slate-400 text-sm mb-1">Student study schedule</p>
+                        <h2 className="text-3xl font-bold text-white flex items-center space-x-2">
+                            <span>📅</span>
+                            <span>Calendar</span>
+                        </h2>
+                    </div>
+                    <button
+                        onClick={handleExportCalendar}
+                        className="px-5 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-2xl font-semibold transition-all duration-200 flex items-center space-x-2 disabled:opacity-70"
+                        disabled={isExporting}
+                    >
+                        {isExporting ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                <span>Exporting...</span>
+                            </>
+                        ) : (
+                            <>
+                                <span>📥</span>
+                                <span>Export Calendar</span>
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
                 <div className="lg:col-span-3 bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
                     <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                         <div>
@@ -2231,6 +2314,7 @@ const StudentDashboard = () => {
                         </Link>
                     </div>
                 </div>
+            </div>
             </div>
         );
     };
