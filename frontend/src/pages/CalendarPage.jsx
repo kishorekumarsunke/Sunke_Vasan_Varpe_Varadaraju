@@ -504,8 +504,8 @@ const CalendarPage = () => {
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-                            <div className="lg:col-span-3 bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
+                        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+                            <div className="xl:col-span-2 bg-slate-900/50 rounded-2xl p-4 sm:p-6 border border-slate-800/50 backdrop-blur-sm">
                                 <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                                     <div>
                                         <p className="text-slate-400 text-sm mb-1">Monthly overview</p>
@@ -539,10 +539,10 @@ const CalendarPage = () => {
                                     ))}
                                 </div>
 
-                                <div className="grid grid-cols-7 gap-2">
+                                <div className="grid grid-cols-7 gap-1 sm:gap-2">
                                     {getDaysInMonth(currentDate).map((day, index) => {
                                         if (!day) {
-                                            return <div key={`empty-${index}`} className="min-h-[110px] rounded-xl border border-dashed border-slate-800/70"></div>;
+                                            return <div key={`empty-${index}`} className="min-h-[80px] sm:min-h-[100px] rounded-xl border border-dashed border-slate-800/70"></div>;
                                         }
 
                                         const dayEvents = getEventsForDate(day);
@@ -555,24 +555,25 @@ const CalendarPage = () => {
                                             <button
                                                 key={`day-${day}`}
                                                 onClick={() => setSelectedDate(day)}
-                                                className={`min-h-[110px] rounded-2xl border text-left p-3 transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/20' : 'border-slate-800/70 bg-slate-900/30 hover:border-blue-500/60'}`}
+                                                className={`min-h-[80px] sm:min-h-[100px] rounded-xl sm:rounded-2xl border text-left p-2 sm:p-3 transition-all duration-200 ${isSelected ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/20' : 'border-slate-800/70 bg-slate-900/30 hover:border-blue-500/60'}`}
                                             >
-                                                <div className="flex items-center justify-between text-sm font-semibold">
+                                                <div className="flex items-center justify-between text-xs sm:text-sm font-semibold">
                                                     <span className="text-white">{day}</span>
-                                                    {isToday && <span className="text-emerald-400 text-xs">Today</span>}
+                                                    {isToday && <span className="text-emerald-400 text-[10px] sm:text-xs">Today</span>}
                                                 </div>
-                                                <div className="mt-2 space-y-1">
+                                                <div className="mt-1 sm:mt-2 space-y-1 overflow-hidden">
                                                     {dayEvents.slice(0, 2).map(event => (
                                                         <div
                                                             key={event.id}
-                                                            className={`text-xs px-2 py-1 rounded-full border ${getEventBadgeClasses(event)} whitespace-nowrap overflow-hidden text-ellipsis`}
+                                                            className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md sm:rounded-full border ${getEventBadgeClasses(event)} truncate max-w-full`}
                                                             title={event.title}
                                                         >
-                                                            {event.title || (event.subject ?? 'Event')}
+                                                            {event.title?.substring(0, 8) || event.subject?.substring(0, 8) || 'Event'}
+                                                            {(event.title?.length > 8 || event.subject?.length > 8) ? '...' : ''}
                                                         </div>
                                                     ))}
                                                     {dayEvents.length > 2 && (
-                                                        <div className="text-[10px] text-slate-400">
+                                                        <div className="text-[9px] sm:text-[10px] text-slate-400">
                                                             +{dayEvents.length - 2} more
                                                         </div>
                                                     )}
@@ -583,48 +584,48 @@ const CalendarPage = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
-                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-6">
-                                        <h3 className="text-xl font-semibold text-white flex items-center space-x-2">
+                            <div className="space-y-4">
+                                <div className="bg-slate-900/50 rounded-2xl p-4 sm:p-5 border border-slate-800/50 backdrop-blur-sm">
+                                    <div className="flex flex-col gap-2 mb-4">
+                                        <h3 className="text-lg sm:text-xl font-semibold text-white flex items-center space-x-2">
                                             <span className="text-emerald-400">📋</span>
                                             <span>{selectedDateLabel}</span>
                                         </h3>
                                     </div>
 
                                     {selectedDayEvents.length === 0 ? (
-                                        <div className="text-center text-slate-400 py-8">
+                                        <div className="text-center text-slate-400 py-6 text-sm">
                                             No sessions or tasks scheduled for this day.
                                         </div>
                                     ) : (
-                                        <div className="space-y-4">
+                                        <div className="space-y-3">
                                             {selectedDayEvents.map(event => (
-                                                <div key={event.id} className="p-4 rounded-2xl border border-slate-800/70 bg-slate-900/40">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div>
-                                                            <p className="text-white font-semibold text-lg line-clamp-1">{event.title}</p>
-                                                            <p className="text-slate-400 text-sm">
-                                                                {event.type === 'session'
-                                                                    ? `${event.subject} with ${user?.role === 'tutor' ? event.student : event.tutor || 'your tutor'}`
-                                                                    : event.subject || 'Personal study task'}
-                                                            </p>
+                                                <div key={event.id} className="p-3 sm:p-4 rounded-xl border border-slate-800/70 bg-slate-900/40">
+                                                    <div className="flex flex-col gap-2 mb-2">
+                                                        <div className="flex items-start justify-between gap-2">
+                                                            <p className="text-white font-semibold text-sm sm:text-base line-clamp-2 flex-1">{event.title}</p>
+                                                            <span className={`text-[10px] sm:text-xs px-2 py-1 rounded-full border whitespace-nowrap ${getEventBadgeClasses(event)}`}>
+                                                                {event.type === 'session' ? (event.status || 'Session') : 'Task'}
+                                                            </span>
                                                         </div>
-                                                        <span className={`text-xs px-3 py-1 rounded-full border ${getEventBadgeClasses(event)}`}>
-                                                            {event.type === 'session' ? (event.status || 'Session') : 'Task'}
-                                                        </span>
+                                                        <p className="text-slate-400 text-xs sm:text-sm">
+                                                            {event.type === 'session'
+                                                                ? `${event.subject} with ${user?.role === 'tutor' ? event.student : event.tutor || 'your tutor'}`
+                                                                : event.subject || 'Personal study task'}
+                                                        </p>
                                                     </div>
-                                                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+                                                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-slate-400">
                                                         <span>🕒 {formatEventTime(event.time)}</span>
                                                         {event.type === 'session' ? (
-                                                            <span>📍 {event.meetingType === 'virtual' ? 'Virtual session' : 'In-person'}</span>
+                                                            <span>📍 {event.meetingType === 'virtual' ? 'Virtual' : 'In-person'}</span>
                                                         ) : (
-                                                            <span>📌 Status: {event.status}</span>
+                                                            <span>📌 {event.status}</span>
                                                         )}
                                                     </div>
                                                     {event.type === 'session' && (
-                                                        <div className="mt-3 flex flex-wrap items-center gap-3">
+                                                        <div className="mt-2 sm:mt-3 flex flex-wrap items-center gap-2">
                                                             {event.status && (
-                                                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${event.status === 'completed' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-blue-500/10 text-blue-200 border border-blue-500/30'}`}>
+                                                                <span className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-medium ${event.status === 'completed' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-blue-500/10 text-blue-200 border border-blue-500/30'}`}>
                                                                     {event.status}
                                                                 </span>
                                                             )}
@@ -643,49 +644,70 @@ const CalendarPage = () => {
                                                                                 : booking
                                                                         ));
                                                                     }}
-                                                                    className="text-xs px-3 py-1"
+                                                                    className="text-[10px] sm:text-xs px-2 sm:px-3 py-1"
                                                                 />
                                                             )}
                                                         </div>
                                                     )}
                                                     {event.type === 'task' && (
-                                                        <div className="mt-3 text-xs text-slate-400">
+                                                        <div className="mt-2 text-[10px] sm:text-xs text-slate-400">
                                                             Progress: {event.progress || 0}%
                                                         </div>
                                                     )}
                                                 </div>
                                             ))}
+                                            {/* Countdown for upcoming sessions */}
+                                            {selectedDayEvents.some(e => e.type === 'session' && (e.status === 'scheduled' || e.status === 'confirmed')) && (
+                                                <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                                                    <p className="text-blue-300 text-xs">Session countdown</p>
+                                                    <p className="text-white font-semibold text-sm mt-1">
+                                                        {(() => {
+                                                            const session = selectedDayEvents.find(e => e.type === 'session' && (e.status === 'scheduled' || e.status === 'confirmed'));
+                                                            if (!session) return 'No upcoming session';
+                                                            const sessionDate = new Date(`${session.date}T${session.time || '09:00'}`);
+                                                            const now = new Date();
+                                                            const diff = sessionDate - now;
+                                                            if (diff < 0) return 'Session in progress or passed';
+                                                            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                                            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                                                            if (days > 0) return `Complete in ${days}d ${hours}h ${mins}m`;
+                                                            return `Complete in ${hours}h ${mins}m`;
+                                                        })()}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
-                                    <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wide">Event Types</h3>
-                                    <div className="space-y-3 text-sm text-slate-300">
-                                        <div className="flex items-center space-x-3">
-                                            <span className="w-4 h-4 rounded-full bg-blue-500"></span>
+                                <div className="bg-slate-900/50 rounded-2xl p-4 sm:p-5 border border-slate-800/50 backdrop-blur-sm">
+                                    <h3 className="text-xs sm:text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wide">Event Types</h3>
+                                    <div className="space-y-2 text-xs sm:text-sm text-slate-300">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="w-3 h-3 rounded-full bg-blue-500"></span>
                                             <span>📚 Tutoring Sessions</span>
                                         </div>
-                                        <div className="flex items-center space-x-3">
-                                            <span className="w-4 h-4 rounded-full bg-red-500"></span>
+                                        <div className="flex items-center space-x-2">
+                                            <span className="w-3 h-3 rounded-full bg-red-500"></span>
                                             <span>📝 High Priority Tasks</span>
                                         </div>
-                                        <div className="flex items-center space-x-3">
-                                            <span className="w-4 h-4 rounded-full bg-amber-500"></span>
+                                        <div className="flex items-center space-x-2">
+                                            <span className="w-3 h-3 rounded-full bg-amber-500"></span>
                                             <span>📝 Medium Priority Tasks</span>
                                         </div>
-                                        <div className="flex items-center space-x-3">
-                                            <span className="w-4 h-4 rounded-full bg-emerald-500"></span>
+                                        <div className="flex items-center space-x-2">
+                                            <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
                                             <span>📝 Low Priority Tasks</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
-                                    <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wide">Quick Actions</h3>
+                                <div className="bg-slate-900/50 rounded-2xl p-4 sm:p-5 border border-slate-800/50 backdrop-blur-sm">
+                                    <h3 className="text-xs sm:text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wide">Quick Actions</h3>
                                     <Link
                                         to="/tutors"
-                                        className="w-full flex items-center justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:opacity-90 transition"
+                                        className="w-full flex items-center justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-semibold hover:opacity-90 transition"
                                     >
                                         Schedule Session
                                     </Link>
