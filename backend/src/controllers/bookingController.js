@@ -512,8 +512,12 @@ const bookingController = {
 
             const bookings = result.rows.map(booking => {
                 // Format booking_date to YYYY-MM-DD for calendar compatibility
+                // Use local date parts to avoid timezone shift issues
                 const bookingDate = new Date(booking.booking_date);
-                const formattedDate = bookingDate.toISOString().split('T')[0];
+                const year = bookingDate.getFullYear();
+                const month = String(bookingDate.getMonth() + 1).padStart(2, '0');
+                const day = String(bookingDate.getDate()).padStart(2, '0');
+                const formattedDate = `${year}-${month}-${day}`;
 
                 // For virtual meetings, location field stores the meeting link
                 const meetingType = booking.meeting_type || 'virtual';
@@ -605,8 +609,12 @@ const bookingController = {
 
             const bookings = result.rows.map(booking => {
                 // Format booking_date to YYYY-MM-DD for calendar compatibility
+                // Use local date parts to avoid timezone shift issues
                 const bookingDate = new Date(booking.booking_date);
-                const formattedDate = bookingDate.toISOString().split('T')[0];
+                const year = bookingDate.getFullYear();
+                const month = String(bookingDate.getMonth() + 1).padStart(2, '0');
+                const day = String(bookingDate.getDate()).padStart(2, '0');
+                const formattedDate = `${year}-${month}-${day}`;
 
                 return {
                     id: booking.id,
@@ -861,8 +869,12 @@ const bookingController = {
 
             const sessions = result.rows.map(booking => {
                 // Format booking_date to YYYY-MM-DD for calendar compatibility
+                // Use local date parts to avoid timezone shift issues
                 const bookingDate = new Date(booking.booking_date);
-                const formattedDate = bookingDate.toISOString().split('T')[0];
+                const year = bookingDate.getFullYear();
+                const month = String(bookingDate.getMonth() + 1).padStart(2, '0');
+                const day = String(bookingDate.getDate()).padStart(2, '0');
+                const formattedDate = `${year}-${month}-${day}`;
 
                 // For virtual meetings, location field stores the meeting link
                 const meetingType = booking.meeting_type || 'virtual';
@@ -1308,7 +1320,12 @@ const bookingController = {
             // Calculate earnings by date
             const earningsByDate = {};
             completedSessions.forEach(session => {
-                const date = session.booking_date.toISOString().split('T')[0];
+                // Use local date parts to avoid timezone shift issues
+                const bookingDate = new Date(session.booking_date);
+                const year = bookingDate.getFullYear();
+                const month = String(bookingDate.getMonth() + 1).padStart(2, '0');
+                const day = String(bookingDate.getDate()).padStart(2, '0');
+                const date = `${year}-${month}-${day}`;
                 if (!earningsByDate[date]) {
                     earningsByDate[date] = {
                         date,
