@@ -190,33 +190,61 @@ const CalendarPage = () => {
 
     // iCal export functionality
     const generateICalContent = (events) => {
-        const icalEvents = events.map(event => {
-            const startDate = new Date(`${event.date}T${event.time}`);
-            const durationMinutes = event.duration || 60; // Use actual duration or default to 60 minutes
-            const endDate = new Date(startDate.getTime() + (durationMinutes * 60 * 1000));
+        // Filter only valid events with scheduled/confirmed status for sessions
+        const exportableEvents = events.filter(event => {
+            if (event.type === 'session') {
+                return event.status === 'scheduled' || event.status === 'confirmed';
+            }
+            // Include tasks that are not completed
+            if (event.type === 'task') {
+                return event.status !== 'completed';
+            }
+            return true;
+        });
 
-            const formatICalDate = (date) => {
-                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-            };
+        const icalEvents = exportableEvents.map(event => {
+            try {
+                // Handle date parsing safely
+                const eventDate = event.date || new Date().toISOString().split('T')[0];
+                const eventTime = event.time || '09:00';
+                const startDate = new Date(`${eventDate}T${eventTime}`);
+                
+                // Validate the date
+                if (isNaN(startDate.getTime())) {
+                    console.warn('Invalid date for event:', event);
+                    return null;
+                }
+                
+                const durationMinutes = event.duration || 60;
+                const endDate = new Date(startDate.getTime() + (durationMinutes * 60 * 1000));
 
-            return [
-                'BEGIN:VEVENT',
-                `DTSTART:${formatICalDate(startDate)}`,
-                `DTEND:${formatICalDate(endDate)}`,
-                `SUMMARY:${event.title}`,
-                `DESCRIPTION:${event.type === 'session'
+                const formatICalDate = (date) => {
+                    return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                };
+
+                const description = event.type === 'session'
                     ? user?.role === 'tutor'
-                        ? `Tutoring session with ${event.student} - ${event.subject}: ${event.topic || 'General tutoring'}`
-                        : `Tutoring session with ${event.tutor} - ${event.subject}${event.meetingType ? ` (${event.meetingType === 'virtual' ? 'Virtual' : 'In-Person'})` : ''}${event.location ? ` - Location: ${event.location}` : ''}`
+                        ? `Tutoring session with ${event.student || 'Student'} - ${event.subject || 'General'}: ${event.topic || 'General tutoring'}`
+                        : `Tutoring session with ${event.tutor || 'Tutor'} - ${event.subject || 'General'}${event.meetingType ? ` (${event.meetingType === 'virtual' ? 'Virtual' : 'In-Person'})` : ''}${event.location ? ` - Location: ${event.location}` : ''}`
                     : event.type === 'task'
-                        ? `Priority: ${event.priority}`
-                        : `Location: ${event.location || 'TBD'}`
-                }`,
-                `UID:${event.id}@tutortogether.com`,
-                'STATUS:CONFIRMED',
-                'END:VEVENT'
-            ].join('\r\n');
-        }).join('\r\n');
+                        ? `Task - Priority: ${event.priority || 'medium'}. ${event.description || ''}`
+                        : `Location: ${event.location || 'TBD'}`;
+
+                return [
+                    'BEGIN:VEVENT',
+                    `DTSTART:${formatICalDate(startDate)}`,
+                    `DTEND:${formatICalDate(endDate)}`,
+                    `SUMMARY:${event.title || 'Event'}`,
+                    `DESCRIPTION:${description}`,
+                    `UID:${event.id || Date.now()}@tutortogether.com`,
+                    'STATUS:CONFIRMED',
+                    'END:VEVENT'
+                ].join('\r\n');
+            } catch (err) {
+                console.warn('Error processing event for export:', event, err);
+                return null;
+            }
+        }).filter(Boolean).join('\r\n');
 
         return [
             'BEGIN:VCALENDAR',
@@ -233,8 +261,22 @@ const CalendarPage = () => {
         setIsExporting(true);
 
         try {
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Filter exportable events
+            const exportableEvents = events.filter(event => {
+                if (event.type === 'session') {
+                    return event.status === 'scheduled' || event.status === 'confirmed';
+                }
+                if (event.type === 'task') {
+                    return event.status !== 'completed';
+                }
+                return true;
+            });
+
+            if (exportableEvents.length === 0) {
+                setExportSuccess('No upcoming sessions or tasks to export');
+                setTimeout(() => setExportSuccess(null), 3000);
+                return;
+            }
 
             const icalContent = generateICalContent(events);
 
@@ -248,7 +290,7 @@ const CalendarPage = () => {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
 
-            setExportSuccess('Calendar exported successfully as iCal!');
+            setExportSuccess(`${exportableEvents.length} event${exportableEvents.length > 1 ? 's' : ''} exported successfully!`);
             setTimeout(() => setExportSuccess(null), 3000);
 
         } catch (error) {

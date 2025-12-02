@@ -698,34 +698,21 @@ const StudentDashboard = () => {
 
     // Calendar export functionality
     const generateSessionICalContent = (sessions) => {
-        const scheduledSessions = sessions.filter(session => 
-            session.status === 'scheduled' || session.status === 'confirmed'
-        );
-        
-        const icalEvents = scheduledSessions.map(session => {
-            // Handle different date/time formats from backend
-            const sessionDate = session.date || session.booking_date;
-            const sessionTime = session.time || session.start_time || '09:00';
-            const startDate = new Date(`${sessionDate}T${sessionTime}`);
-            const duration = session.duration || session.duration_minutes || 60;
-            const endDate = new Date(startDate.getTime() + (duration * 60 * 1000));
+        const icalEvents = sessions.filter(session => session.status === 'scheduled').map(session => {
+            const startDate = new Date(`${session.date}T${session.time}`);
+            const endDate = new Date(startDate.getTime() + (session.duration * 60 * 1000)); // Duration in minutes
 
             const formatICalDate = (date) => {
                 return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
             };
 
-            const tutorName = session.tutorName || session.tutor_name || 'Tutor';
-            const subject = session.subject || 'Tutoring';
-            const topic = session.topic || session.notes || session.message || 'Session';
-            const meetingLink = session.meetingLink || session.meeting_link || 'Online';
-
             return [
                 'BEGIN:VEVENT',
                 `DTSTART:${formatICalDate(startDate)}`,
                 `DTEND:${formatICalDate(endDate)}`,
-                `SUMMARY:${subject} - Tutoring Session with ${tutorName}`,
-                `DESCRIPTION:Tutoring session with ${tutorName} for ${subject}. Topic: ${topic}`,
-                `LOCATION:${meetingLink}`,
+                `SUMMARY:${session.topic} - Tutoring Session`,
+                `DESCRIPTION:Tutoring session with ${session.tutorName} for ${session.subject}. Notes: ${session.notes || 'No additional notes'}`,
+                `LOCATION:${session.meetingLink}`,
                 `UID:${session.id}@tutortogether.com`,
                 'STATUS:CONFIRMED',
                 'END:VEVENT'
@@ -747,19 +734,18 @@ const StudentDashboard = () => {
         setIsExporting(true);
 
         try {
-            // Use realBookings instead of mock user.sessions
-            const upcomingSessions = realBookings.filter(session => 
-                session.status === 'scheduled' || session.status === 'confirmed'
-            );
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            const upcomingSessions = user.sessions.filter(session => session.status === 'scheduled');
 
             if (upcomingSessions.length === 0) {
                 setActionSuccess('No upcoming sessions to export');
-                setNotificationType('warning');
                 setTimeout(() => setActionSuccess(null), 3000);
                 return;
             }
 
-            const icalContent = generateSessionICalContent(realBookings);
+            const icalContent = generateSessionICalContent(user.sessions);
 
             if (format === 'ical') {
                 const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
@@ -773,14 +759,12 @@ const StudentDashboard = () => {
                 window.URL.revokeObjectURL(url);
             }
 
-            setActionSuccess(`${upcomingSessions.length} session${upcomingSessions.length > 1 ? 's' : ''} exported successfully!`);
-            setNotificationType('success');
+            setActionSuccess(`${upcomingSessions.length} sessions exported successfully!`);
             setTimeout(() => setActionSuccess(null), 3000);
 
         } catch (error) {
             console.error('Export failed:', error);
             setActionSuccess('Export failed. Please try again.');
-            setNotificationType('error');
             setTimeout(() => setActionSuccess(null), 3000);
         } finally {
             setIsExporting(false);
