@@ -185,6 +185,10 @@ const TutorDashboard = () => {
   const [earningsLoading, setEarningsLoading] = useState(true);
   const [overviewData, setOverviewData] = useState(null);
   const [overviewLoading, setOverviewLoading] = useState(true);
+  
+  // Reviews-related state
+  const [reviewsData, setReviewsData] = useState(null);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   // Task-related state
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -469,12 +473,39 @@ const TutorDashboard = () => {
     }
   };
 
+  // Load tutor reviews
+  const loadReviewsData = async () => {
+    try {
+      setReviewsLoading(true);
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${API_BASE_URL}/reviews/tutors/${authUser.id}/reviews`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch reviews data');
+      }
+
+      const data = await response.json();
+      console.log('⭐ Loaded reviews data:', data);
+      setReviewsData(data);
+    } catch (error) {
+      console.error('❌ Error loading reviews data:', error);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
   // Load real sessions data
   useEffect(() => {
     loadRealSessions();
     loadPendingRequests();
     loadEarningsData();
     loadOverviewData();
+    loadReviewsData();
     loadTutorData();
     loadTasks();
     loadSubjects();
@@ -1317,7 +1348,8 @@ const TutorDashboard = () => {
     { id: 'overview', label: 'Overview', icon: 'home' },
     { id: 'sessions', label: 'Sessions', icon: 'book' },
     { id: 'tasks', label: 'Tasks', icon: 'clipboard' },
-    { id: 'earnings', label: 'Earnings', icon: 'dollar' }
+    { id: 'earnings', label: 'Earnings', icon: 'dollar' },
+    { id: 'reviews', label: 'Reviews', icon: 'star' }
   ];
 
   const quickActions = [
@@ -2312,6 +2344,194 @@ const TutorDashboard = () => {
     );
   };
 
+  // Render Reviews Content
+  const renderReviewsContent = () => {
+    if (reviewsLoading) {
+      return (
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      );
+    }
+
+    const reviews = reviewsData?.reviews || [];
+    const statistics = reviewsData?.statistics || {};
+    const averageRating = parseFloat(statistics.average_rating) || 0;
+    const totalReviews = parseInt(statistics.total_reviews) || 0;
+
+    return (
+      <div className="space-y-6">
+        {/* Reviews Statistics Header */}
+        <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-orange-500/10 rounded-2xl p-6 border border-amber-500/20">
+          <h3 className="text-xl font-semibold text-white flex items-center space-x-2 mb-6">
+            <span className="text-amber-400">⭐</span>
+            <span>Your Reviews</span>
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {/* Average Rating */}
+            <div className="text-center">
+              <div className="text-4xl font-bold text-amber-400 mb-2">{averageRating.toFixed(1)}</div>
+              <div className="flex items-center justify-center space-x-1 mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className={`w-5 h-5 ${i < Math.round(averageRating) ? 'text-amber-400' : 'text-slate-600'}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <div className="text-slate-400 text-sm">Average Rating</div>
+            </div>
+
+            {/* Total Reviews */}
+            <div className="text-center">
+              <div className="text-4xl font-bold text-blue-400 mb-2">{totalReviews}</div>
+              <div className="text-slate-400 text-sm">Total Reviews</div>
+            </div>
+
+            {/* Recommendations */}
+            <div className="text-center">
+              <div className="text-4xl font-bold text-emerald-400 mb-2">
+                {statistics.recommendations || 0}
+              </div>
+              <div className="text-slate-400 text-sm">Would Recommend</div>
+            </div>
+
+            {/* 5 Star Count */}
+            <div className="text-center">
+              <div className="text-4xl font-bold text-purple-400 mb-2">
+                {statistics.five_star_count || 0}
+              </div>
+              <div className="text-slate-400 text-sm">5-Star Reviews</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Rating Breakdown */}
+        <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
+          <h3 className="text-lg font-semibold text-white mb-4">Rating Breakdown</h3>
+          <div className="space-y-3">
+            {[5, 4, 3, 2, 1].map((star) => {
+              const count = statistics[`${['one', 'two', 'three', 'four', 'five'][star - 1]}_star_count`] || 0;
+              const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+              return (
+                <div key={star} className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-1 w-16">
+                    <span className="text-white">{star}</span>
+                    <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 h-3 bg-slate-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-500"
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                  <div className="w-12 text-right text-slate-400 text-sm">{count}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Detailed Ratings */}
+        {(statistics.avg_session_quality || statistics.avg_communication || statistics.avg_punctuality || statistics.avg_helpfulness) && (
+          <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
+            <h3 className="text-lg font-semibold text-white mb-4">Detailed Ratings</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {statistics.avg_session_quality && (
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg">
+                  <div className="text-2xl font-bold text-cyan-400">{parseFloat(statistics.avg_session_quality).toFixed(1)}</div>
+                  <div className="text-slate-400 text-sm">Session Quality</div>
+                </div>
+              )}
+              {statistics.avg_communication && (
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-400">{parseFloat(statistics.avg_communication).toFixed(1)}</div>
+                  <div className="text-slate-400 text-sm">Communication</div>
+                </div>
+              )}
+              {statistics.avg_punctuality && (
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg">
+                  <div className="text-2xl font-bold text-emerald-400">{parseFloat(statistics.avg_punctuality).toFixed(1)}</div>
+                  <div className="text-slate-400 text-sm">Punctuality</div>
+                </div>
+              )}
+              {statistics.avg_helpfulness && (
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-400">{parseFloat(statistics.avg_helpfulness).toFixed(1)}</div>
+                  <div className="text-slate-400 text-sm">Helpfulness</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Reviews List */}
+        <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-800/50 backdrop-blur-sm">
+          <h3 className="text-lg font-semibold text-white mb-6">All Reviews</h3>
+          
+          {reviews.length > 0 ? (
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review.id} className="p-4 bg-slate-800/50 rounded-xl hover:bg-slate-800/70 transition-colors">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="text-white font-medium">{review.student_name}</div>
+                      <div className="text-slate-400 text-sm">
+                        {review.subject} • {new Date(review.booking_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className={`w-5 h-5 ${i < review.rating ? 'text-amber-400' : 'text-slate-600'}`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {review.review_text && (
+                    <p className="text-slate-300 text-sm mb-3">"{review.review_text}"</p>
+                  )}
+                  
+                  {review.would_recommend && (
+                    <div className="flex items-center space-x-2 text-emerald-400 text-sm">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span>Would recommend</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-slate-500 text-6xl mb-4">⭐</div>
+              <p className="text-slate-400">No reviews yet</p>
+              <p className="text-slate-500 text-sm mt-2">Complete sessions to receive reviews from students</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'sessions':
@@ -2320,6 +2540,8 @@ const TutorDashboard = () => {
         return renderEarningsContent();
       case 'tasks':
         return renderTasksContent();
+      case 'reviews':
+        return renderReviewsContent();
       default:
         return renderOverviewContent();
     }
