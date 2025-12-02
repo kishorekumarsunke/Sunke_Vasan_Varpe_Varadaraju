@@ -516,41 +516,52 @@ const TutorDashboard = () => {
     loadEarningsData();
     loadOverviewData();
     loadReviewsData();
-    loadTutorData();
     loadTasks();
     loadSubjects();
-  }, []);  // Load tutor profile data
+  }, []);
+  
+  // Update tutor data when earnings/overview data is loaded
+  useEffect(() => {
+    if (earningsData || overviewData || realSessions) {
+      loadTutorData();
+    }
+  }, [earningsData, overviewData, realSessions]);
+
+  // Load tutor profile data
   const loadTutorData = async () => {
     try {
-      // For now, use some default data while we implement the API
+      // Get real students from earnings data (completed sessions)
+      const recentStudentsFromSessions = [];
+      if (earningsData?.recentSessions) {
+        const studentMap = new Map();
+        earningsData.recentSessions.forEach(session => {
+          if (session.studentName && !studentMap.has(session.studentName)) {
+            studentMap.set(session.studentName, {
+              id: session.studentId || session.id,
+              name: session.studentName,
+              subject: session.subject,
+              lastSession: session.date
+            });
+          }
+        });
+        recentStudentsFromSessions.push(...studentMap.values());
+      }
+
       setTutorData({
         stats: {
           upcomingSessions: realSessions.filter(s => s.status === 'scheduled').length,
-          activeStudents: 34,
-          monthlyEarnings: 4680,
-          averageRating: 4.9
+          activeStudents: overviewData?.stats?.totalStudents || 0,
+          monthlyEarnings: overviewData?.stats?.monthEarnings || 0,
+          averageRating: overviewData?.profile?.rating || 0
         },
-        recentStudents: [
-          { id: '1', name: 'Alex Rodriguez', subject: 'Mathematics', progress: 85 },
-          { id: '2', name: 'Emma Wilson', subject: 'Physics', progress: 92 },
-          { id: '3', name: 'Mike Chen', subject: 'Chemistry', progress: 78 },
-          { id: '4', name: 'Sarah Johnson', subject: 'Computer Science', progress: 95 }
-        ],
-        students: [
-          { id: '1', name: 'Alex Rodriguez', avatar: 'https://via.placeholder.com/48', university: 'UT Arlington', totalSessions: 12, averageRating: 4.8, progress: 85 },
-          { id: '2', name: 'Emma Wilson', avatar: 'https://via.placeholder.com/48', university: 'UT Arlington', totalSessions: 8, averageRating: 4.9, progress: 92 },
-          { id: '3', name: 'Mike Chen', avatar: 'https://via.placeholder.com/48', university: 'UT Arlington', totalSessions: 15, averageRating: 4.7, progress: 78 }
-        ],
+        recentStudents: recentStudentsFromSessions,
+        students: recentStudentsFromSessions,
         earnings: {
-          total: 15420,
-          thisMonth: 4680,
-          thisWeek: 1250,
-          todayEarnings: 300,
-          dailyEarnings: [
-            { date: '2025-11-20', amount: 300, sessions: 3 },
-            { date: '2025-11-19', amount: 250, sessions: 2 },
-            { date: '2025-11-18', amount: 400, sessions: 4 }
-          ]
+          total: earningsData?.summary?.totalEarnings || 0,
+          thisMonth: earningsData?.summary?.thisMonthEarnings || 0,
+          thisWeek: earningsData?.summary?.thisWeekEarnings || 0,
+          todayEarnings: earningsData?.summary?.todayEarnings || 0,
+          dailyEarnings: earningsData?.earningsByDate || []
         },
         todaySessions: realSessions.filter(s => {
           const sessionDate = s.date?.includes('T') ? s.date.split('T')[0] : s.date;
@@ -2152,29 +2163,41 @@ const TutorDashboard = () => {
             <h3 className="text-xl font-semibold text-white">
               <span>Recent Students</span>
             </h3>
-            <Link to="/students" className="text-emerald-400 hover:text-emerald-300 text-sm font-medium">
-              View All →
-            </Link>
+            <span className="text-slate-500 text-sm">
+              {tutorData.recentStudents.length} student{tutorData.recentStudents.length !== 1 ? 's' : ''}
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {tutorData.recentStudents.slice(0, 4).map((student) => (
-              <div key={student.id} className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:bg-slate-800/50 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center border border-emerald-500/30">
-                    <span className="text-emerald-400 text-sm font-medium">
-                      {student.name ? student.name.split(' ').map(n => n[0]).join('') : 'U'}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-white font-medium text-sm">{student.name}</h4>
-                    <p className="text-slate-400 text-xs">{student.subject}</p>
-                    <p className="text-slate-500 text-xs">Progress: {student.progress}%</p>
+          {tutorData.recentStudents.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {tutorData.recentStudents.slice(0, 4).map((student, index) => (
+                <div key={student.id || index} className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 hover:bg-slate-800/50 transition-colors">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center border border-emerald-500/30">
+                      <span className="text-emerald-400 text-sm font-medium">
+                        {student.name ? student.name.split(' ').map(n => n[0]).join('') : 'U'}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-white font-medium text-sm">{student.name}</h4>
+                      <p className="text-slate-400 text-xs">{student.subject}</p>
+                      {student.lastSession && (
+                        <p className="text-slate-500 text-xs">
+                          Last session: {new Date(student.lastSession).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-slate-500 text-4xl mb-3">👥</div>
+              <p className="text-slate-400">No students yet</p>
+              <p className="text-slate-500 text-sm mt-1">Complete sessions to see your students here</p>
+            </div>
+          )}
         </div>
       </div>
     );
