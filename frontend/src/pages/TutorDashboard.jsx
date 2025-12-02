@@ -478,8 +478,18 @@ const TutorDashboard = () => {
     try {
       setReviewsLoading(true);
       const token = localStorage.getItem('token');
+      
+      // Get user from localStorage as authUser might not be ready
+      const userStr = localStorage.getItem('user');
+      const user = userStr ? JSON.parse(userStr) : null;
+      
+      if (!user?.id) {
+        console.error('❌ No user ID available for loading reviews');
+        setReviewsLoading(false);
+        return;
+      }
 
-      const response = await fetch(`${API_BASE_URL}/reviews/tutors/${authUser.id}/reviews`, {
+      const response = await fetch(`${API_BASE_URL}/reviews/tutors/${user.id}/reviews`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
