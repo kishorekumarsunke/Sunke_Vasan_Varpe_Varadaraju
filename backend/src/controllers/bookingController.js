@@ -936,7 +936,7 @@ const bookingController = {
             const booking = permissionResult.rows[0];
 
             // Check if the booking is in a state that allows rescheduling
-            if (!['pending', 'confirmed'].includes(booking.status)) {
+            if (!['pending', 'confirmed', 'scheduled'].includes(booking.status)) {
                 return res.status(400).json({
                     error: 'This booking cannot be rescheduled in its current status'
                 });
@@ -982,7 +982,7 @@ const bookingController = {
                 WHERE tutor_id = $1 
                 AND booking_date = $2 
                 AND id != $3
-                AND status IN ('confirmed', 'pending')
+                AND status IN ('confirmed', 'pending', 'scheduled')
                 AND (
                     (start_time <= $4 AND end_time > $4) OR
                     (start_time < $5 AND end_time >= $5) OR

@@ -671,26 +671,70 @@ const StudentDashboard = () => {
         setErrors(prev => ({ ...prev, reschedule: null }));
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Check if this is a real booking that needs API call
+            if (selectedSession.isRealBooking || selectedBooking) {
+                const bookingId = selectedSession.id || selectedBooking?.id;
+                
+                // Calculate end time (add 1 hour to start time by default)
+                const startTimeParts = newTime.split(':');
+                const startHour = parseInt(startTimeParts[0]);
+                const startMinutes = startTimeParts[1] || '00';
+                const endHour = startHour + 1;
+                const newEndTime = `${endHour.toString().padStart(2, '0')}:${startMinutes}`;
+                
+                const response = await fetch(`${API_BASE_URL}/booking/bookings/${bookingId}/reschedule`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({
+                        newDate,
+                        newStartTime: newTime,
+                        newEndTime: newEndTime,
+                        reason: ''
+                    })
+                });
 
-            // Simulate possible error
-            if (Math.random() < 0.1) {
-                throw new Error('Failed to reschedule session. Please try again.');
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || data.message || 'Failed to reschedule session');
+                }
+
+                // Show success message
+                const formattedDate = new Date(newDate).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                setActionSuccess(`Session rescheduled to ${formattedDate} at ${newTime}`);
+                setTimeout(() => setActionSuccess(null), 3000);
+
+                // Close modal and reset
+                setShowRescheduleModal(false);
+                setSelectedSession(null);
+                setSelectedBooking(null);
+
+                // Reload bookings to get fresh data
+                loadRealBookings();
+            } else {
+                // For mock sessions (backwards compatibility)
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Show success message
+                setActionSuccess(`Session rescheduled to ${newDate} at ${newTime}`);
+                setTimeout(() => setActionSuccess(null), 3000);
+
+                // Close modal and reset
+                setShowRescheduleModal(false);
+                setSelectedSession(null);
+
+                console.log('Session rescheduled:', selectedSession, { newDate, newTime });
             }
-
-            // Show success message
-            setActionSuccess(`Session rescheduled to ${newDate} at ${newTime}`);
-            setTimeout(() => setActionSuccess(null), 3000);
-
-            // Close modal and reset
-            setShowRescheduleModal(false);
-            setSelectedSession(null);
-
-            // In a real app, you would update the sessions list here
-            console.log('Session rescheduled:', selectedSession, { newDate, newTime });
         } catch (error) {
-            setErrors(prev => ({ ...prev, reschedule: error.message }));
+            console.error('Error rescheduling session:', error);
+            setErrors(prev => ({ ...prev, reschedule: error.message || 'Failed to reschedule session. Please try again.' }));
         } finally {
             setLoading(prev => ({ ...prev, rescheduleSession: false }));
         }
@@ -827,7 +871,18 @@ const StudentDashboard = () => {
 
     // Booking-specific handlers
     const handleRescheduleBooking = (booking) => {
+        // Set both selectedBooking (for API calls) and selectedSession (for modal display)
         setSelectedBooking(booking);
+        setSelectedSession({
+            id: booking.id,
+            topic: booking.sessionType || booking.subject || 'Tutoring Session',
+            tutorName: booking.tutorName,
+            tutorId: booking.tutorId || booking.tutor_id,
+            date: booking.date || booking.sessionDate,
+            time: booking.startTime || booking.time,
+            duration: booking.duration,
+            isRealBooking: true
+        });
         setShowRescheduleModal(true);
     };
 
@@ -930,6 +985,8 @@ const StudentDashboard = () => {
         return (
             <Modal isOpen={showRescheduleModal} onClose={() => {
                 setShowRescheduleModal(false);
+                setSelectedSession(null);
+                setSelectedBooking(null);
                 setRescheduleData({ date: '', time: '', reason: '' });
                 setErrors(prev => ({ ...prev, reschedule: null }));
             }}>
