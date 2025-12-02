@@ -214,6 +214,11 @@ const StudentDashboard = () => {
 
     // Modal states for reschedule and cancel (booking-specific)
     const [selectedBooking, setSelectedBooking] = useState(null);
+    const [rescheduleData, setRescheduleData] = useState({
+        date: '',
+        time: '',
+        reason: ''
+    });
 
     // Dynamic greeting based on time of day
     const getGreeting = () => {
@@ -970,12 +975,6 @@ const StudentDashboard = () => {
     };
 
     const RescheduleModal = () => {
-        const [rescheduleData, setRescheduleData] = useState({
-            date: '',
-            time: '',
-            reason: ''
-        });
-
         const handleRescheduleSubmit = () => {
             confirmRescheduleSession(rescheduleData.date, rescheduleData.time);
         };
