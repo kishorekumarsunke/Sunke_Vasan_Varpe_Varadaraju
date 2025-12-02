@@ -1649,13 +1649,6 @@ const StudentDashboard = () => {
                                     </div>
                                     <div className="flex flex-col space-y-2">
                                         <button
-                                            onClick={() => handleRescheduleBooking(booking)}
-                                            className="px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 text-xs font-medium rounded-lg transition-all duration-200 border border-blue-500/30"
-                                            title="Reschedule session"
-                                        >
-                                            📅 Reschedule
-                                        </button>
-                                        <button
                                             onClick={() => handleCancelBooking(booking)}
                                             className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 text-xs font-medium rounded-lg transition-all duration-200 border border-red-500/30"
                                             title="Cancel session"
